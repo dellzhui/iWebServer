@@ -9,13 +9,15 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import os
 import sys
+from datetime import timedelta
 from pathlib import Path
 from interface.datatype.config import iWebServerBaseConfig
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,20 +27,27 @@ BASE_DIR = Path(__file__).resolve().parent
 SECRET_KEY = 'django-insecure-**qs6ui9h%oae9ks)boqjy#644fwdgtcpb6eh73210y%*fepv='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = iWebServerBaseConfig.IWEBSERVER_APP_DEBUG
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
 
 # Application definition
 
 INSTALLED_APPS = [
+    'simpleui',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'channels',
+
+    'imqtt',
+    'interface',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +80,28 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'iWebServer.wsgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        "rest_framework.permissions.IsAuthenticated",
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication'
+    ],
+    "DEFAULT_PARSER_CLASSES": [
+        "rest_framework.parsers.JSONParser"
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTTokenUserAuthentication',
+    ],
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=int(iWebServerBaseConfig.IWEBSERVER_JWT_ACCESS_TOKEN_LIFETIME_DAYS),
+                                       seconds=int(iWebServerBaseConfig.IWEBSERVER_JWT_ACCESS_TOKEN_LIFETIME_SECONDS),
+                                       hours=int(iWebServerBaseConfig.IWEBSERVER_JWT_ACCESS_TOKEN_LIFETIME_HOURS),
+                                       minutes=int(iWebServerBaseConfig.IWEBSERVER_JWT_ACCESS_TOKEN_LIFETIME_MINUTES),
+                                       weeks=int(iWebServerBaseConfig.IWEBSERVER_JWT_ACCESS_TOKEN_LIFETIME_WEEKS)),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=365),
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -118,7 +149,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -129,6 +160,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES = os.path.join(BASE_DIR, 'static')
+STATIC_FC_URL = STATIC_URL
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+SIMPLEUI_HOME_INFO = False
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
