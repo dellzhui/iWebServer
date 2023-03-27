@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'channels',
+    'crispy_forms',
+    'crispy_bootstrap4',
 
     'imqtt',
     'interface',
@@ -85,7 +87,9 @@ ROOT_URLCONF = 'iWebServer.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -210,6 +214,9 @@ ACCOUNT_SIGNUP_FORM_CLASS = 'myaccount.forms.SignupForm'
 # ------------------------------------------------------------------------------
 LOGIN_REDIRECT_URL = '/'
 
+# http://django-crispy-forms.readthedocs.io/en/latest/install.html#template-packs
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
