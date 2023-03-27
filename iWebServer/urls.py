@@ -18,16 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    # path('i18n/', include('django.conf.urls.i18n')),
+    path('i18n/', include('django.conf.urls.i18n')),
+]
+
+urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('myaccount.urls')),
     path('', include('web.views.urls')),
-]
-
-# urlpatterns += i18n_patterns(
-#     path('admin/', admin.site.urls),
-#     path('accounts/', include('allauth.urls')),
-#     path('accounts/', include('myaccount.urls')),
-#     path('', include('web.views.urls')),
-# )
+)

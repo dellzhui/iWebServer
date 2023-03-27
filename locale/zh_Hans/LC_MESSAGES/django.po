@@ -1,0 +1,462 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-03-27 17:32+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+#: .\iWebServer\settings.py:179 .\templates\dark\base.html:102
+msgid "Simplified Chinese"
+msgstr "简体中文"
+
+#: .\iWebServer\settings.py:180 .\templates\dark\base.html:103
+msgid "Traditional Chinese"
+msgstr "繁体中文"
+
+#: .\iWebServer\settings.py:181
+msgid "English"
+msgstr "英文"
+
+#: .\interface\models.py:27
+msgid "Create Time"
+msgstr "创建时间"
+
+#: .\interface\models.py:28
+msgid "Update Time"
+msgstr "更新时间"
+
+#: .\myaccount\templates\account\account_inactive.html:5
+#: .\myaccount\templates\account\account_inactive.html:8
+msgid "Account Inactive"
+msgstr "账户未激活"
+
+#: .\myaccount\templates\account\account_inactive.html:10
+msgid "This account is inactive."
+msgstr "此账户尚未激活"
+
+#: .\myaccount\templates\account\email.html:7
+msgid "Account"
+msgstr "账户"
+
+#: .\myaccount\templates\account\email.html:10
+msgid "E-mail Addresses"
+msgstr "邮箱地址"
+
+#: .\myaccount\templates\account\email.html:13
+msgid "The following e-mail addresses are associated with your account:"
+msgstr "以下电子邮件地址与您的账户相关联："
+
+#: .\myaccount\templates\account\email.html:27
+msgid "Verified"
+msgstr "已验证"
+
+#: .\myaccount\templates\account\email.html:29
+msgid "Unverified"
+msgstr "未验证"
+
+#: .\myaccount\templates\account\email.html:31
+msgid "Primary"
+msgstr "主要的"
+
+#: .\myaccount\templates\account\email.html:37
+msgid "Make Primary"
+msgstr "设为主要"
+
+#: .\myaccount\templates\account\email.html:38
+msgid "Re-send Verification"
+msgstr "重新发送验证"
+
+#: .\myaccount\templates\account\email.html:39
+msgid "Remove"
+msgstr "移除"
+
+#: .\myaccount\templates\account\email.html:46
+msgid "Warning:"
+msgstr "警告："
+
+#: .\myaccount\templates\account\email.html:46
+msgid ""
+"You currently do not have any e-mail address set up. You should really add "
+"an e-mail address so you can receive notifications, reset your password, etc."
+msgstr "您目前没有设置任何电子邮件地址。你应该添加一个电子邮件地址，这样你就可以接收通知、重设密码等。"
+
+#: .\myaccount\templates\account\email.html:51
+msgid "Add E-mail Address"
+msgstr "添加电子邮件地址"
+
+#: .\myaccount\templates\account\email.html:56
+msgid "Add E-mail"
+msgstr "添加电子邮件"
+
+#: .\myaccount\templates\account\email.html:66
+msgid "Do you really want to remove the selected e-mail address?"
+msgstr "您真的要删除所选的电子邮件地址吗？"
+
+#: .\myaccount\templates\account\email_confirm.html:6
+#: .\myaccount\templates\account\email_confirm.html:10
+msgid "Confirm E-mail Address"
+msgstr "确认电邮地址"
+
+#: .\myaccount\templates\account\email_confirm.html:16
+#, python-format
+msgid ""
+"Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
+"address for user %(user_display)s."
+msgstr "请确认 <a href=\"mailto:%(email)s\">%(email)s</a> 是用户 %(user_display)s 的电子邮件地址。"
+
+#: .\myaccount\templates\account\email_confirm.html:20
+msgid "Confirm"
+msgstr "确认"
+
+#: .\myaccount\templates\account\email_confirm.html:27
+#, python-format
+msgid ""
+"This e-mail confirmation link expired or is invalid. Please <a href="
+"\"%(email_url)s\">issue a new e-mail confirmation request</a>."
+msgstr "此电子邮件确认链接已过期或无效。请<a href=\"%(email_url)s\">发出新的电子邮件确认请求</a>。"
+
+#: .\myaccount\templates\account\login.html:7
+#: .\myaccount\templates\account\login.html:14
+#: .\myaccount\templates\account\login.html:36
+msgid "Sign In"
+msgstr "登录"
+
+#: .\myaccount\templates\account\login.html:18
+#, python-format
+msgid ""
+"Please sign in with one\n"
+"                            of your existing third party accounts. Or, <a "
+"href=\"%(signup_url)s\">sign up</a>\n"
+"                            for a %(site_name)s account and sign in below:"
+msgstr "请使用您现有的第三方帐户之一登录。\n或者，<a href=\"%(signup_url)s\">注册</a> %(site_name)s 帐户并在下方登录："
+
+#: .\myaccount\templates\account\login.html:26
+msgid "or"
+msgstr "或"
+
+#: .\myaccount\templates\account\login.html:45
+msgid "Forgot your password?"
+msgstr "忘记密码？"
+
+#: .\myaccount\templates\account\logout.html:5
+#: .\myaccount\templates\account\logout.html:12
+#: .\myaccount\templates\account\logout.html:19
+msgid "Sign Out"
+msgstr "登出"
+
+#: .\myaccount\templates\account\logout.html:13
+msgid "Are you sure you want to sign out?"
+msgstr "您确定要退出吗？"
+
+#: .\myaccount\templates\account\password_change.html:6
+#: .\myaccount\templates\account\password_change.html:9
+#: .\myaccount\templates\account\password_change.html:14
+#: .\myaccount\templates\account\password_reset_from_key.html:5
+#: .\myaccount\templates\account\password_reset_from_key.html:8
+#: .\myaccount\templates\account\password_reset_from_key_done.html:4
+#: .\myaccount\templates\account\password_reset_from_key_done.html:7
+#: .\templates\dark\base.html:159
+msgid "Change Password"
+msgstr "更改密码"
+
+#: .\myaccount\templates\account\password_change.html:15
+msgid "Return To Home Page"
+msgstr "回到主页"
+
+#: .\myaccount\templates\account\password_reset.html:7
+#: .\myaccount\templates\account\password_reset.html:11
+#: .\myaccount\templates\account\password_reset_done.html:6
+#: .\myaccount\templates\account\password_reset_done.html:9
+msgid "Password Reset"
+msgstr "重置密码"
+
+#: .\myaccount\templates\account\password_reset.html:16
+msgid ""
+"Forgotten your password? Enter your e-mail address below, and we'll send you "
+"an e-mail allowing you to reset it."
+msgstr "忘记了你的密码？在下面输入您的电子邮件地址，我们将向您发送一封电子邮件，让您重新设置它。"
+
+#: .\myaccount\templates\account\password_reset.html:21
+msgid "Reset My Password"
+msgstr "重置我的密码"
+
+#: .\myaccount\templates\account\password_reset.html:24
+msgid "Please contact us if you have any trouble resetting your password."
+msgstr "如果您在重置密码时遇到任何问题，请联系我们。"
+
+#: .\myaccount\templates\account\password_reset_done.html:15
+msgid ""
+"We have sent you an e-mail. Please contact us if you do not receive it "
+"within a few minutes."
+msgstr "我们已经给你发了一封电子邮件。如果您在几分钟内没有收到，请联系我们。"
+
+#: .\myaccount\templates\account\password_reset_from_key.html:8
+msgid "Bad Token"
+msgstr "令牌错误"
+
+#: .\myaccount\templates\account\password_reset_from_key.html:12
+#, python-format
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a <a href=\"%(passwd_reset_url)s\">new password reset</"
+"a>."
+msgstr "密码重置链接无效，可能是因为它已被使用。请申请<a href=\"%(passwd_reset_url)s\">新密码重置</a>。"
+
+#: .\myaccount\templates\account\password_reset_from_key.html:18
+msgid "change password"
+msgstr "更改密码"
+
+#: .\myaccount\templates\account\password_reset_from_key.html:21
+#: .\myaccount\templates\account\password_reset_from_key_done.html:8
+msgid "Your password is now changed."
+msgstr "您的密码已更改"
+
+#: .\myaccount\templates\account\password_set.html:6
+#: .\myaccount\templates\account\password_set.html:9
+#: .\myaccount\templates\account\password_set.html:14
+msgid "Set Password"
+msgstr "设置密码"
+
+#: .\myaccount\templates\account\signup.html:6
+msgid "Signup"
+msgstr "注册"
+
+#: .\myaccount\templates\account\signup_closed.html:5
+#: .\myaccount\templates\account\signup_closed.html:8
+msgid "Sign Up Closed"
+msgstr "注册功能暂未开放"
+
+#: .\myaccount\templates\account\signup_closed.html:10
+msgid "We are sorry, but the sign up is currently closed."
+msgstr "很抱歉，目前注册功能尚未开放。"
+
+#: .\myaccount\templates\account\verification_sent.html:5
+#: .\myaccount\templates\account\verification_sent.html:8
+#: .\myaccount\templates\account\verified_email_required.html:5
+#: .\myaccount\templates\account\verified_email_required.html:8
+msgid "Verify Your E-mail Address"
+msgstr "确认你的邮件地址"
+
+#: .\myaccount\templates\account\verification_sent.html:10
+msgid ""
+"We have sent an e-mail to you for verification. Follow the link provided to "
+"finalize the signup process. Please contact us if you do not receive it "
+"within a few minutes."
+msgstr "我们已发送电子邮件给您进行验证。按照提供的链接完成注册过程。如果您在几分钟内没有收到，请联系我们。"
+
+#: .\myaccount\templates\account\verified_email_required.html:12
+msgid ""
+"This part of the site requires us to verify that\n"
+"you are who you claim to be. For this purpose, we require that you\n"
+"verify ownership of your e-mail address. "
+msgstr "网站的这一部分要求我们验证您的真实身份。\n为此，我们要求您验证您的电子邮件地址的所有权。"
+
+#: .\myaccount\templates\account\verified_email_required.html:16
+msgid ""
+"We have sent an e-mail to you for\n"
+"verification. Please click on the link inside this e-mail. Please\n"
+"contact us if you do not receive it within a few minutes."
+msgstr "我们已发送电子邮件给您进行验证。\n请单击此电子邮件中的链接。如果您在几分钟内没有收到，请联系我们。"
+
+#: .\myaccount\templates\account\verified_email_required.html:20
+#, python-format
+msgid ""
+"<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your e-"
+"mail address</a>."
+msgstr "<strong>注意</strong>：您仍然可以<a href=\"%(email_url)s\">更改您的电子邮件地址</a>。"
+
+#: .\myaccount\templates\management_base.html:9
+#: .\myaccount\templates\management_base.html:16 .\templates\dark\base.html:207
+msgid "Management"
+msgstr "用户管理"
+
+#: .\myaccount\templates\management_base.html:14
+msgid "Home"
+msgstr "首页"
+
+#: .\myaccount\templates\management_base.html:28
+msgid "Users"
+msgstr "用户"
+
+#: .\myaccount\templates\management_base.html:29
+msgid "Groups"
+msgstr "分组"
+
+#: .\myaccount\templates\management_group_details.html:26
+msgid "Please Select"
+msgstr "请选择"
+
+#: .\myaccount\templates\management_group_details.html:68
+#: .\myaccount\templates\management_grouplist.html:26
+msgid "Group Name"
+msgstr "分组名称"
+
+#: .\myaccount\templates\management_group_details.html:69
+msgid "Group name cannot be empty"
+msgstr "分组名称不能为空"
+
+#: .\myaccount\templates\management_group_details.html:72
+#: .\myaccount\templates\management_grouplist.html:27
+msgid "Level"
+msgstr "级别"
+
+#: .\myaccount\templates\management_group_details.html:73
+#: .\myaccount\templates\management_grouplist.html:34
+msgid "Provincial Level"
+msgstr "省级"
+
+#: .\myaccount\templates\management_group_details.html:73
+#: .\myaccount\templates\management_grouplist.html:34
+msgid "City Level"
+msgstr "市级"
+
+#: .\myaccount\templates\management_group_details.html:80
+msgid "Permissions"
+msgstr "权限"
+
+#: .\myaccount\templates\management_group_details.html:93
+msgid "Submit"
+msgstr "提交"
+
+#: .\myaccount\templates\management_group_details.html:94
+msgid "Back To Group List"
+msgstr "回到分组列表"
+
+#: .\myaccount\templates\management_grouplist.html:13
+msgid "New City Group"
+msgstr "新建市级分组"
+
+#: .\myaccount\templates\management_grouplist.html:17
+msgid "New Provincial Group"
+msgstr "新建省级分组"
+
+#: .\myaccount\templates\management_userlist.html:9
+#: .\myaccount\templates\management_userlist.html:14
+msgid "Add User"
+msgstr "添加用户"
+
+#: .\myaccount\templates\management_userlist.html:21
+#: .\myaccount\templates\management_userlist.html:45
+msgid "User Name"
+msgstr "用户名"
+
+#: .\myaccount\templates\management_userlist.html:23
+msgid "User Password"
+msgstr "密码"
+
+#: .\myaccount\templates\management_userlist.html:25
+#: .\myaccount\templates\management_userlist.html:46
+msgid "Email"
+msgstr "邮箱"
+
+#: .\myaccount\templates\management_userlist.html:28
+msgid "Add"
+msgstr "添加"
+
+#: .\myaccount\templates\management_userlist.html:47
+msgid "Group"
+msgstr "分组"
+
+#: .\myaccount\templates\management_userlist.html:48
+msgid "Actions"
+msgstr "动作"
+
+#: .\myaccount\templates\management_userlist.html:68
+msgid "Delete"
+msgstr "删除"
+
+#: .\myaccount\templates\management_userlist.html:73
+msgid "Are you sure?"
+msgstr "确定？"
+
+#: .\myaccount\templates\management_userlist.html:79
+msgid "Yes,delete it!"
+msgstr "是的，请删除！"
+
+#: .\templates\dark\base.html:160
+msgid "Menu Config"
+msgstr "菜单配置"
+
+#: .\templates\dark\base.html:164
+msgid "Logout"
+msgstr "登出"
+
+#: .\templates\dark\base.html:174
+msgid "DEVICE MANAGEMENT"
+msgstr ""
+
+#: .\templates\dark\base.html:177
+msgid "Alarms"
+msgstr ""
+
+#: .\templates\dark\base.html:179
+msgid "Complaints"
+msgstr ""
+
+#: .\templates\dark\base.html:181
+msgid "Businesses"
+msgstr ""
+
+#: .\templates\dark\base.html:183
+msgid "Device Information"
+msgstr ""
+
+#: .\templates\dark\base.html:185
+msgid "Device Diagnosis"
+msgstr ""
+
+#: .\templates\dark\base.html:187
+msgid "Dynamic Protecting"
+msgstr ""
+
+#: .\templates\dark\base.html:189
+msgid "APP Management"
+msgstr ""
+
+#: .\templates\dark\base.html:191
+msgid "OTA Upgrade"
+msgstr ""
+
+#: .\templates\dark\base.html:194
+msgid "Timed Tasks"
+msgstr ""
+
+#: .\templates\dark\base.html:197
+msgid "BI Report Generator"
+msgstr ""
+
+#: .\templates\dark\base.html:199
+msgid "Predictive Analytics"
+msgstr ""
+
+#: .\templates\dark\base.html:201
+msgid "SETTINGS"
+msgstr "设置"
+
+#: .\templates\dark\base.html:203
+msgid "Device Groups"
+msgstr ""
+
+#: .\templates\dark\base.html:205
+msgid "Provisioning"
+msgstr ""
+
+#: .\templates\dark\base.html:209
+msgid "Advance Tool"
+msgstr ""
+
+#: .\templates\dark\base.html:212
+msgid "Access Log"
+msgstr ""

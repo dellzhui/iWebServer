@@ -99,8 +99,8 @@
                             {% get_language_info_list for LANGUAGES as languages %}
                             <select class="selectpicker" data-style="form-control btn-secondary" name="language" onchange="this.form.submit()" style="text-align:right">
                                 <option value="en-us" {% if "en-us" == LANGUAGE_CODE %} selected="selected"{% endif %}>English</option>
-                                <option value="zh-hans" {% if "zh-hans" == LANGUAGE_CODE %} selected="selected"{% endif %}>简体中文</option>
-                                <option value="zh-hant" {% if "zh-hant" == LANGUAGE_CODE %} selected="selected"{% endif %}>繁體中文</option>
+                                <option value="zh-hans" {% if "zh-hans" == LANGUAGE_CODE %} selected="selected"{% endif %}>{% trans 'Simplified Chinese' %}</option>
+                                <option value="zh-hant" {% if "zh-hant" == LANGUAGE_CODE %} selected="selected"{% endif %}>{% trans 'Traditional Chinese' %}</option>
 {#                                    {% for language in LANGUAGES %}#}
 {#                                        <option value="{{ language.0 }}"{% if language.0 == LANGUAGE_CODE %} selected="selected"{% endif %}>#}
 {#                                            {{ language.1 }}#}
