@@ -1,9 +1,9 @@
 import os
-from iWebServer.settings import BASE_DIR
+from pathlib import Path
 
 
 class iWebServerBaseConfig:
-    IWEBSERVER_LOG_DIR = os.environ.get('IWEBSERVER_LOG_DIR', BASE_DIR)
+    IWEBSERVER_LOG_DIR = os.environ.get('IWEBSERVER_LOG_DIR', Path(__file__).resolve().parent.parent)
 
     IWEBSERVER_DB_MYSQL_DBNAME = os.environ.get('IWEBSERVER_DB_MYSQL_DBNAME')
     IWEBSERVER_DB_MYSQL_HOST = os.environ.get('IWEBSERVER_DB_MYSQL_HOST')

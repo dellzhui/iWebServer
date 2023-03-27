@@ -134,3 +134,57 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+    'version': 1,  # 保留字
+    'disable_existing_loggers': False,  # 禁用已经存在的logger实例
+    # 日志文件的格式
+    'formatters': {
+        # 详细的日志格式
+        'standard': {
+            'format': '[%(levelname)s][%(asctime)s][%(threadName)s:%(thread)d][%(name)s][%(funcName)s:%(lineno)d]%(message)s'
+        },
+        # 简单的日志格式
+        'simple': {
+            'format': '[%(levelname)s][%(threadName)s][%(asctime)s]%(message)s'
+        },
+        # 定义一个特殊的日志格式
+        'collect': {
+            'format': '%(message)s'
+        }
+    },
+    # 过滤器
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    # 处理器
+    'handlers': {
+        # 在终端打印
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],  # 只有在Django debug为True时才在屏幕打印日志
+            'class': 'logging.StreamHandler',  #
+            'formatter': 'standard'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': '{}/idms_app.log'.format(iWebServerBaseConfig.IWEBSERVER_LOG_DIR),
+            'formatter': 'standard',
+            'when': 'W0',
+            'interval': 1,
+            'backupCount': 12,
+            'encoding': 'utf-8'
+        },
+    },
+    'loggers': {
+        # 默认的logger应用如下配置
+        '': {
+            'handlers': ['file', 'console'],  # 上线之后可以把'console'移除
+            'level': 'INFO',
+            'propagate': True,  # 向不向更高级别的logger传递
+        },
+    },
+}
