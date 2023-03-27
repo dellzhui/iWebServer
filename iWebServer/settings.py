@@ -9,11 +9,13 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import sys
 from pathlib import Path
+from interface.datatype.config import iWebServerBaseConfig
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -73,13 +75,24 @@ WSGI_APPLICATION = 'iWebServer.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': iWebServerBaseConfig.IWEBSERVER_DB_MYSQL_DBNAME,
+        'USER': iWebServerBaseConfig.IWEBSERVER_DB_MYSQL_USER,
+        'PASSWORD': iWebServerBaseConfig.IWEBSERVER_DB_MYSQL_PASSWORD,
+        'HOST': iWebServerBaseConfig.IWEBSERVER_DB_MYSQL_HOST,
+        'PORT': iWebServerBaseConfig.IWEBSERVER_DB_MYSQL_PORT,
+        'OPTIONS': {'charset': 'utf8mb4', 'ssl_mode': 'DISABLED'} if (sys.version[:5] == "3.10." and sys.platform.startswith('linux')) else {'charset': 'utf8mb4'},
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

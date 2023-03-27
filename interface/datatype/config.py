@@ -1,5 +1,12 @@
 import os
+from iWebServer.settings import BASE_DIR
 
 
-class iWebServerConfig:
-    IWEBSERVER_LOG_DIR = os.environ.get('IWEBSERVER_LOG_DIR', '.')
+class iWebServerBaseConfig:
+    IWEBSERVER_LOG_DIR = os.environ.get('IWEBSERVER_LOG_DIR', BASE_DIR)
+
+    IWEBSERVER_DB_MYSQL_DBNAME = os.environ.get('IWEBSERVER_DB_MYSQL_DBNAME')
+    IWEBSERVER_DB_MYSQL_HOST = os.environ.get('IWEBSERVER_DB_MYSQL_HOST')
+    IWEBSERVER_DB_MYSQL_PORT = os.environ.get('IWEBSERVER_DB_MYSQL_PORT')
+    IWEBSERVER_DB_MYSQL_USER = os.environ.get('IWEBSERVER_DB_MYSQL_USER')
+    IWEBSERVER_DB_MYSQL_PASSWORD = os.environ.get('IWEBSERVER_DB_MYSQL_PASSWORD')

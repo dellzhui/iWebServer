@@ -1,5 +1,5 @@
 import logging.handlers
-from interface.datatype.config import iWebServerConfig
+from interface.datatype.config import iWebServerBaseConfig
 
 
 class loggerr(object):
@@ -11,7 +11,7 @@ class loggerr(object):
 
     def __get_file_handler(self):
         file_handler = logging.handlers.TimedRotatingFileHandler(
-            filename='{}/webrtc_h5.log'.format(iWebServerConfig.IWEBSERVER_LOG_DIR),
+            filename='{}/webrtc_h5.log'.format(iWebServerBaseConfig.IWEBSERVER_LOG_DIR),
             when='W0',
             interval=1,
             backupCount=12,
