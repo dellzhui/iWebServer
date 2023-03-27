@@ -1,0 +1,51 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block inner %}
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-6 col-sm-8">
+            <div class="card">
+                <div class="card-body">
+                    <h1>{% trans "Sign In" %}</h1>
+                    {% get_providers as socialaccount_providers %}
+                    {% if socialaccount_providers %}
+                        <p>
+                            {% blocktrans with site.name as site_name %}Please sign in with one
+                            of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+                            for a {{ site_name }} account and sign in below:{% endblocktrans %}
+                        </p>
+                        <div class="socialaccount_ballot">
+                            <ul class="socialaccount_providers">
+                                {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+                            </ul>
+                            <div class="login-or">{% trans 'or' %}</div>
+                        </div>
+                        {% include "socialaccount/snippets/login_extra.html" %}
+                    {% endif %}
+                    <form class="login" method="POST" action="{% url 'account_login' %}">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                        {% endif %}
+                        <center><button class="primaryAction btn btn-primary" type="submit">{% trans "Sign In" %}</button></center>
+                    </form>
+                </div>
+                <div class="card-footer text-muted text-center">
+                    New to IDMS? <a href="{% url 'account_signup' %}">Sign up</a>
+                </div>
+            </div>
+            <div class="text-center py-2">
+                <small>
+                    <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot your password?" %}</a>
+                </small>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,67 @@
+{% extends 'management_base.html' %}
+{% load i18n %}
+
+{% block management_groups_tab_color %}style="color:#fb9678"{% endblock %}
+
+{% block management_nav_content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div>
+                        <a href="{% url 'myaccount:group_perm_details' 0 2 %}" class="btn btn-info">{% trans 'New City Group' %}</a>
+                    </div>
+                    {% if not user_control_province %}
+                    <div class="m-l-20">
+                        <a href="{% url 'myaccount:group_perm_details' 0 1 %}" class="btn btn-info">{% trans 'New Provincial Group' %}</a>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="row m-t-10">
+                    <div class="table-responsive">
+                        <table class="table table-hover color-table info-table">
+                            <thead>
+                                <tr>
+                                    <th>{% trans 'Group Name' %}</th>
+                                    <th>{% trans 'Level' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user_control in user_controls %}
+                                <tr>
+                                    <td><a href="{% url 'myaccount:group_perm_details' user_control.pk user_control.Level %}">{{ user_control.AreaName }}</a></td>
+                                    <td>{% if user_control.Level == 1 %}{% trans 'Provincial Level' %}{% elif user_control.Level == 2 %}{% trans 'City Level' %}{% endif %}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-5 offset-md-5">
+        {% if user_controls.has_previous %}
+            <a href="?page=1" class="btn btn-secondary" role="button">&laquo;</a>
+            <a href="?page={{ user_controls.previous_page_number }}" class="btn btn-secondary" role="button">&lt;</a>
+        {%  else %}
+            <a href="#" class="btn btn-secondary disabled" role="button">&laquo;</a>
+            <a href="#" class="btn btn-secondary disabled" role="button">&lt;</a>
+        {% endif %}
+
+        <button type="button" class="btn btn-secondary">{{ user_controls.number }}&nbsp;&nbsp;/&nbsp;&nbsp;{{ user_controls.paginator.num_pages }}</button>
+
+        {% if user_controls.has_next %}
+            <a href="?page={{ user_controls.next_page_number }}" class="btn btn-secondary" role="button">&gt;</a>
+            <a href="?page={{ user_controls.paginator.num_pages }}" class="btn btn-secondary" role="button">&raquo;</a>
+        {%  else %}
+            <a href="#" class="btn btn-secondary disabled" role="button">&gt;</a>
+            <a href="#" class="btn btn-secondary disabled" role="button">&raquo;</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

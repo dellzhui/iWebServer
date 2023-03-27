@@ -1,10 +1,12 @@
 import json
+import logging
 import time
 from json import JSONEncoder
 
 from interface.utils.log_utils import loggerr
 
-Log = loggerr(__name__).getLogger()
+# Log = loggerr(__name__).getLogger()
+Log = logging.getLogger(__name__)
 
 
 class IdmsEncoder(JSONEncoder):

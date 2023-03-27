@@ -32,6 +32,16 @@ DEBUG = iWebServerBaseConfig.IWEBSERVER_APP_DEBUG
 ALLOWED_HOSTS = ['*']
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
 
+# for allauth
+SITE_ID = 1
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,6 +52,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+	'django.contrib.sites',
+    'myaccount',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'rest_framework',
     'rest_framework_simplejwt',
     'channels',
@@ -54,11 +69,16 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    #'guardian.backends.ObjectPermissionBackend',
+)
 
 ROOT_URLCONF = 'iWebServer.urls'
 
@@ -172,6 +192,25 @@ SIMPLEUI_HOME_INFO = False
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
+# django-allauth
+# ------------------------------------------------------------------------------
+# ACCOUNT_ALLOW_REGISTRATION = True
+# ACCOUNT_ALLOW_REGISTRATION = False
+# https://django-allauth.readthedocs.io/en/latest/configuration.html
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+# https://django-allauth.readthedocs.io/en/latest/configuration.html
+ACCOUNT_EMAIL_REQUIRED = True
+# https://django-allauth.readthedocs.io/en/latest/configuration.html
+# ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+ACCOUNT_SIGNUP_FORM_CLASS = 'myaccount.forms.SignupForm'
+
+# AUTHENTICATION
+# ------------------------------------------------------------------------------
+LOGIN_REDIRECT_URL = '/'
+
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGGING = {
@@ -210,7 +249,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': '{}/idms_app.log'.format(iWebServerBaseConfig.IWEBSERVER_LOG_DIR),
+            'filename': '{}/iwebserver.log'.format(iWebServerBaseConfig.IWEBSERVER_LOG_DIR),
             'formatter': 'standard',
             'when': 'W0',
             'interval': 1,

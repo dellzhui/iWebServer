@@ -1,0 +1,101 @@
+{% extends 'management_base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block stylesheet %}
+<link href="{% static '/assets/node_modules/bootstrap-switch/bootstrap-switch.min.css' %}" rel="stylesheet">
+<link href="{% static 'dark/dist/css/pages/bootstrap-switch.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block script_content_body %}
+<script src="{% static '/assets/node_modules/bootstrap-switch/bootstrap-switch.min.js' %}"></script>
+<script type="text/javascript">
+    function changeStatus(){
+        if(document.getElementById("config_status").checked) {
+            document.getElementById("config_status_switch").value = 'running';
+        } else {
+            document.getElementById("config_status_switch").value = 'stopped';
+        }
+    }
+
+    function changeSelector(id, value, desc=null) {
+        if(id == null) {
+            return ;
+        }
+        if(value == null) {
+            document.getElementById(id + '_selector').textContent = "{% trans 'Please Select' %}";
+            document.getElementById(id).value = '';
+            return ;
+        }
+        document.getElementById(id + '_selector').textContent = (desc == null) ? value :desc;
+        document.getElementById(id).value = value;
+    }
+
+    $(".bt-switch input[type='checkbox'], .bt-switch input[type='radio']").bootstrapSwitch();
+    var radioswitch = function() {
+        var bt = function() {
+            $(".radio-switch").on("switch-change", function() {
+                $(".radio-switch").bootstrapSwitch("toggleRadioState")
+            }), $(".radio-switch").on("switch-change", function() {
+                $(".radio-switch").bootstrapSwitch("toggleRadioStateAllowUncheck")
+            }), $(".radio-switch").on("switch-change", function() {
+                $(".radio-switch").bootstrapSwitch("toggleRadioStateAllowUncheck", !1)
+            })
+        };
+        return {
+            init: function() {
+                bt()
+            }
+        }
+    }();
+    $(document).ready(function() {
+        radioswitch.init();
+    });
+</script>
+{% endblock %}
+
+{% block management_groups_tab_color %}style="color:#fb9678"{% endblock %}
+
+{% block management_nav_content %}
+<div class="row m-t-10">
+    <form class="custom-checkbox" action="{% if user_control %}{% url 'myaccount:group_perm_details' user_control.pk Level %}{% else %}{% url 'myaccount:group_perm_details' 0 Level %}{% endif %}" method="post">
+        {% csrf_token %}
+        <div class="col-lg-12">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6 input-user_control">
+                            <label class="m-t-10" style="width: 105px">{% trans 'Group Name' %}:</label>
+                            <input type="text" class="form-control" placeholder="{% if user_control %}{{ user_control.Name }}{% else %}{% trans 'Group name cannot be empty' %}{% endif %}" name="Name" {% if user_control %}value="{{ user_control.Name }}" disabled{% endif %}>
+                        </div>
+                        <div class="col-lg-6 input-user_control">
+                            <label class="m-t-10" style="width: 121px">{% trans 'Level' %}:</label>
+                            <input type="text" class="form-control" value="{% if Level == 1 %}{% trans 'Provincial Level' %}{% elif Level == 2 %}{% trans 'City Level' %}{% endif %}" disabled>
+                        </div>
+                    </div>
+                    <div class="row m-t-20">
+                        <div class="col-lg-8 bt-switch">
+                            <div class="row">
+                                <div class="col-lg-2 m-t-10">
+                                    <label style="width: 121px">{% trans 'Permissions' %}:</label>
+                                </div>
+                                <div class="col-lg-10">
+                                    <select class="selectpicker" data-style="form-control btn-secondary" name="PermissionName" multiple style="text-align: center">
+                                        {% for permission in permissions %}
+                                            <option value="{{ permission }}" {% if permission in permissions_selected %}selected{% endif %}>{{ permission }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-t-10">
+                        <button class="btn btn-success" type="submit" style="width:130px">{% trans 'Submit' %}</button>
+                        <a href="{% url 'myaccount:management' %}" class="btn btn-success ml-auto" style="width:160px">{% trans 'Back To Group List' %}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

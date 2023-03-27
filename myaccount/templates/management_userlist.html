@@ -1,0 +1,121 @@
+{% extends 'management_base.html' %}
+{% load i18n %}
+
+{% block management_userlist_tab_color %}style="color:#fb9678"{% endblock %}
+
+{% block management_nav_content %}
+<div class="row">
+    <div class="ml-auto m-r-10">
+        <li class="box-label" style="list-style-type:none"><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" class="btn btn-info">+ {% trans 'Add User' %}</a></li>
+        <div id="myModal" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">{% trans 'Add User' %}</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" action="{% url 'myaccount:new_user' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label>{% trans 'User Name' %}:</label>
+                                <input type="text" class="form-control" name="UserName">
+                                <label>{% trans 'User Password' %}:</label>
+                                <input type="text" class="form-control" name="Password">
+                                <label>{% trans 'Email' %}:</label>
+                                <input type="text" class="form-control" name="Email">
+                            </div>
+                            <button type="submit" class="btn btn-info waves-effect">{% trans 'Add' %}</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><br>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover color-table info-table">
+                        <thead>
+                            <tr>
+                                <th>{% trans 'User Name' %}</th>
+                                <th>{% trans 'Email' %}</th>
+                                <th>{% trans 'Group' %}</th>
+                                <th>{% trans 'Actions' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                {% if user.UserType != 'Admin' %}
+                                <td>
+                                    <form action="{% url 'myaccount:set_user_group' user.pk %}" method="post">
+                                        {% csrf_token %}
+                                        <select class="selectpicker" data-style="form-control btn-secondary" name="GroupName" {% if user.groups.count == 0 %}multiple{% endif %} onchange="this.form.submit()" style="text-align:right">
+                                            {% for group in groups %}
+                                                <option value="{{ group.name }}" {% if group in user.groups.all %}selected{% endif %}>{{ group.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </form>
+                                </td>
+                                <td>
+                                    <li class="box-label" style="list-style-type:none"><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal_{{ user.pk }}">{% trans 'Delete' %}</a></li>
+                                    <div id="myModal_{{ user.pk }}" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_{{ user.pk }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title" id="myModalLabel_{{ user.pk }}">{%  trans "Are you sure?" %}</h4>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form class="form-horizontal" action="{% url 'myaccount:delete_user' user.pk %}">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-info waves-effect">{%  trans "Yes,delete it!" %}</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                {% else %}
+                                <td>{{ user.group.first.Name }}</td>
+                                <td></td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-5 offset-md-5">
+        {% if users.has_previous %}
+            <a href="?page=1" class="btn btn-secondary" role="button">&laquo;</a>
+            <a href="?page={{ users.previous_page_number }}" class="btn btn-secondary" role="button">&lt;</a>
+        {%  else %}
+            <a href="#" class="btn btn-secondary disabled" role="button">&laquo;</a>
+            <a href="#" class="btn btn-secondary disabled" role="button">&lt;</a>
+        {% endif %}
+
+        <button type="button" class="btn btn-secondary">{{ users.number }}&nbsp;&nbsp;/&nbsp;&nbsp;{{ users.paginator.num_pages }}</button>
+
+        {% if users.has_next %}
+            <a href="?page={{ users.next_page_number }}" class="btn btn-secondary" role="button">&gt;</a>
+            <a href="?page={{ users.paginator.num_pages }}" class="btn btn-secondary" role="button">&raquo;</a>
+        {%  else %}
+            <a href="#" class="btn btn-secondary disabled" role="button">&gt;</a>
+            <a href="#" class="btn btn-secondary disabled" role="button">&raquo;</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
