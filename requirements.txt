@@ -7,3 +7,6 @@ djangorestframework-simplejwt==5.2.2
 django-allauth==0.53.1
 django-crispy-forms==2.0
 crispy-bootstrap4==2022.1
+PyMySQL==1.0.2
+pycryptodome==3.17
+paho-mqtt==1.6.1
