@@ -66,6 +66,8 @@ INSTALLED_APPS = [
 
     'imqtt',
     'interface',
+    'web',
+    'websocket',
 ]
 
 MIDDLEWARE = [

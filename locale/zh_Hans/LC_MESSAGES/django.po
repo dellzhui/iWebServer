@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-27 17:32+0800\n"
+"POT-Creation-Date: 2023-03-27 18:12+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,15 +17,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-#: .\iWebServer\settings.py:179 .\templates\dark\base.html:102
+
+#: .\iWebServer\settings.py:181 .\templates\dark\base.html:102
 msgid "Simplified Chinese"
 msgstr "简体中文"
 
-#: .\iWebServer\settings.py:180 .\templates\dark\base.html:103
+#: .\iWebServer\settings.py:182 .\templates\dark\base.html:103
 msgid "Traditional Chinese"
 msgstr "繁体中文"
 
-#: .\iWebServer\settings.py:181
+#: .\iWebServer\settings.py:183
 msgid "English"
 msgstr "英文"
 
@@ -90,7 +91,9 @@ msgstr "警告："
 msgid ""
 "You currently do not have any e-mail address set up. You should really add "
 "an e-mail address so you can receive notifications, reset your password, etc."
-msgstr "您目前没有设置任何电子邮件地址。你应该添加一个电子邮件地址，这样你就可以接收通知、重设密码等。"
+msgstr ""
+"您目前没有设置任何电子邮件地址。你应该添加一个电子邮件地址，这样你就可以接收"
+"通知、重设密码等。"
 
 #: .\myaccount\templates\account\email.html:51
 msgid "Add E-mail Address"
@@ -114,7 +117,9 @@ msgstr "确认电邮地址"
 msgid ""
 "Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
 "address for user %(user_display)s."
-msgstr "请确认 <a href=\"mailto:%(email)s\">%(email)s</a> 是用户 %(user_display)s 的电子邮件地址。"
+msgstr ""
+"请确认 <a href=\"mailto:%(email)s\">%(email)s</a> 是用户 %(user_display)s 的"
+"电子邮件地址。"
 
 #: .\myaccount\templates\account\email_confirm.html:20
 msgid "Confirm"
@@ -125,7 +130,9 @@ msgstr "确认"
 msgid ""
 "This e-mail confirmation link expired or is invalid. Please <a href="
 "\"%(email_url)s\">issue a new e-mail confirmation request</a>."
-msgstr "此电子邮件确认链接已过期或无效。请<a href=\"%(email_url)s\">发出新的电子邮件确认请求</a>。"
+msgstr ""
+"此电子邮件确认链接已过期或无效。请<a href=\"%(email_url)s\">发出新的电子邮件"
+"确认请求</a>。"
 
 #: .\myaccount\templates\account\login.html:7
 #: .\myaccount\templates\account\login.html:14
@@ -140,7 +147,9 @@ msgid ""
 "                            of your existing third party accounts. Or, <a "
 "href=\"%(signup_url)s\">sign up</a>\n"
 "                            for a %(site_name)s account and sign in below:"
-msgstr "请使用您现有的第三方帐户之一登录。\n或者，<a href=\"%(signup_url)s\">注册</a> %(site_name)s 帐户并在下方登录："
+msgstr ""
+"请使用您现有的第三方帐户之一登录。\n"
+"或者，<a href=\"%(signup_url)s\">注册</a> %(site_name)s 帐户并在下方登录："
 
 #: .\myaccount\templates\account\login.html:26
 msgid "or"
@@ -186,7 +195,9 @@ msgstr "重置密码"
 msgid ""
 "Forgotten your password? Enter your e-mail address below, and we'll send you "
 "an e-mail allowing you to reset it."
-msgstr "忘记了你的密码？在下面输入您的电子邮件地址，我们将向您发送一封电子邮件，让您重新设置它。"
+msgstr ""
+"忘记了你的密码？在下面输入您的电子邮件地址，我们将向您发送一封电子邮件，让您"
+"重新设置它。"
 
 #: .\myaccount\templates\account\password_reset.html:21
 msgid "Reset My Password"
@@ -212,7 +223,9 @@ msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used.  Please request a <a href=\"%(passwd_reset_url)s\">new password reset</"
 "a>."
-msgstr "密码重置链接无效，可能是因为它已被使用。请申请<a href=\"%(passwd_reset_url)s\">新密码重置</a>。"
+msgstr ""
+"密码重置链接无效，可能是因为它已被使用。请申请<a href=\"%(passwd_reset_url)s"
+"\">新密码重置</a>。"
 
 #: .\myaccount\templates\account\password_reset_from_key.html:18
 msgid "change password"
@@ -254,28 +267,36 @@ msgid ""
 "We have sent an e-mail to you for verification. Follow the link provided to "
 "finalize the signup process. Please contact us if you do not receive it "
 "within a few minutes."
-msgstr "我们已发送电子邮件给您进行验证。按照提供的链接完成注册过程。如果您在几分钟内没有收到，请联系我们。"
+msgstr ""
+"我们已发送电子邮件给您进行验证。按照提供的链接完成注册过程。如果您在几分钟内"
+"没有收到，请联系我们。"
 
 #: .\myaccount\templates\account\verified_email_required.html:12
 msgid ""
 "This part of the site requires us to verify that\n"
 "you are who you claim to be. For this purpose, we require that you\n"
 "verify ownership of your e-mail address. "
-msgstr "网站的这一部分要求我们验证您的真实身份。\n为此，我们要求您验证您的电子邮件地址的所有权。"
+msgstr ""
+"网站的这一部分要求我们验证您的真实身份。\n"
+"为此，我们要求您验证您的电子邮件地址的所有权。"
 
 #: .\myaccount\templates\account\verified_email_required.html:16
 msgid ""
 "We have sent an e-mail to you for\n"
 "verification. Please click on the link inside this e-mail. Please\n"
 "contact us if you do not receive it within a few minutes."
-msgstr "我们已发送电子邮件给您进行验证。\n请单击此电子邮件中的链接。如果您在几分钟内没有收到，请联系我们。"
+msgstr ""
+"我们已发送电子邮件给您进行验证。\n"
+"请单击此电子邮件中的链接。如果您在几分钟内没有收到，请联系我们。"
 
 #: .\myaccount\templates\account\verified_email_required.html:20
 #, python-format
 msgid ""
 "<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your e-"
 "mail address</a>."
-msgstr "<strong>注意</strong>：您仍然可以<a href=\"%(email_url)s\">更改您的电子邮件地址</a>。"
+msgstr ""
+"<strong>注意</strong>：您仍然可以<a href=\"%(email_url)s\">更改您的电子邮件地"
+"址</a>。"
 
 #: .\myaccount\templates\management_base.html:9
 #: .\myaccount\templates\management_base.html:16 .\templates\dark\base.html:207
@@ -459,4 +480,18 @@ msgstr ""
 
 #: .\templates\dark\base.html:212
 msgid "Access Log"
+msgstr ""
+
+#: .\templates\includes\not_open.html:12 .\templates\includes\not_open.html:19
+msgid "This feature is not enabled"
+msgstr "未开通此功能"
+
+#: .\templates\includes\not_open.html:20
+msgid ""
+"The current account is not enabled for this function. Please contact the "
+"administrator if necessary."
+msgstr "当前账号未开通此功能权限，如有需要请与管理员联系。"
+
+#: .\web\models.py:16 .\web\models.py:17
+msgid "UserControl"
 msgstr ""

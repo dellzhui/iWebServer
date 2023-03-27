@@ -1,0 +1,5 @@
+{
+    "log_cmd": "logcat -v threadtime -f /data/logtest.log -s ActivityManager:D -s Volley:D &",
+    "config_url":"https://idms-oss.oss-cn-shanghai.aliyuncs.com/idms_config/Log/stb_1.0.2.conf",
+    "parser_config_url":"https://idms-oss.oss-cn-shanghai.aliyuncs.com/idms_config/Log/stb-parsers_1.0.2.conf"
+}

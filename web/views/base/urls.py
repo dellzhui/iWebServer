@@ -4,4 +4,5 @@ from web.views.base import views
 
 urlpatterns = [
     path('', login_required(views.dashboard), name='dashboard'),
+    path('forbidden/', login_required(views.forbidden), name='forbidden'),
 ]
