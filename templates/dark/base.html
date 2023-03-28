@@ -157,7 +157,7 @@
                                 <!-- text-->
 {#                                <a href="javascript:void(0)" class="dropdown-item"><i class="ti-settings"></i> {%  trans "Account Setting" %}</a>#}
                                 <a href="{% url 'account_change_password' %}" class="dropdown-item"><i class="ti-settings"></i> {%  trans "Change Password" %}</a>
-                                {% if 'menu_config' in MENU_NEED_URL %}<a href="{% url 'menu_config_list' %}" class="dropdown-item"><i class="ti-menu"></i> {%  trans "Menu Config" %}</a>{% endif %}
+                                <a href="{% url 'menu_config_list' %}" class="dropdown-item"><i class="ti-menu"></i> {%  trans "Menu Config" %}</a>
                                 <!-- text-->
                                 <div class="dropdown-divider"></div>
                                 <!-- text-->
@@ -173,45 +173,46 @@
                     <ul id="sidebarnav">
                         <li class="nav-small-cap">--- {% trans 'DEVICE MANAGEMENT' %}</li>
                         <li class="{% block dashboard_tab_color %}{% endblock %}"> <a href="{% url 'dashboard' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="icon-speedometer"></i><span class="hide-menu">Dashboard </span></a></li>
-                        {% if 'alarms' in MENU_NEED_URL %}
-						<li class="{% block alarms_tab_color %}{% endblock %}"> <a href="{% url 'alarms' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="ti-bell"></i><span class="hide-menu">{% trans 'Alarms' %} </span></a></li>{% endif %}
-                        {% if 'complaint' in MENU_NEED_URL %}
-						<li class="{% block complaint_tab_color %}{% endblock %}"> <a href="{% url 'complaint' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="icon-earphones-alt"></i><span class="hide-menu">{% trans 'Complaints' %} </span></a></li>{% endif %}
-                        {% if 'device_business' in MENU_NEED_URL %}
-						<li class="{% block rules_and_automation_tab_color %}{% endblock %}"> <a href="{% url 'device_business' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="ti-panel"></i><span class="hide-menu">{% trans 'Businesses' %} </span></a></li>{% endif %}
-                        {% if  'single_device' in MENU_NEED_URL %}
-						<li class="{% block single_device_tab_color %}{% endblock %}"> <a href="{% url 'single_device' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="ti-view-list-alt"></i><span class="hide-menu">{% trans 'Device Information' %} </span></a></li>{% endif %}
-                        {% if 'device_diagnostics' in MENU_NEED_URL %}
-						<li class="{% block device_diagnostics_tab_color %}{% endblock %}"> <a href="{% url 'device_diagnostics' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="fas fa-diagnoses"></i><span class="hide-menu">{% trans 'Device Diagnosis' %} </span></a></li>{% endif %}
-                        {% if 'dynamic_protecting' in MENU_NEED_URL %}
-						<li class="{% block dynamic_protecting_tab_color %}{% endblock %}"> <a href="{% url 'dynamic_protecting' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="icon-shield"></i><span class="hide-menu">{% trans 'Dynamic Protecting' %} </span></a></li>{% endif %}
-                        {% if 'app_management' in MENU_NEED_URL %}
-						<li class="{% block app_management_tab_color %}{% endblock %}"> <a href="{% url 'app_management' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="icon-grid"></i><span class="hide-menu">{% trans 'APP Management' %} </span></a></li>{% endif %}
-                        {% if 'ota_upgrade' in MENU_NEED_URL %}
-						<li class="{% block ota_upgrade_tab_color %}{% endblock %}"> <a href="{% url 'ota_upgrade' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="fas fa-arrow-alt-circle-up"></i><span class="hide-menu">{% trans 'OTA Upgrade' %} </span></a></li>{% endif %}
-                        {% if isTimedTaskEnabled %}
-                        {% if 'timedtasks_task_list' in MENU_NEED_URL %}
-                        <li class="{% block timedtasks_tab_color %}{% endblock %}"> <a href="{% url 'timedtasks_task_list' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="far fa-clock"></i><span class="hide-menu">{% trans 'Timed Tasks' %} </span></a></li>{% endif %}
-                        {% endif %}
-                        {% if 'bi_report_generator' in MENU_NEED_URL %}
-						<li class="{% block bi_report_tab_color %}{% endblock %}"> <a href="{% url 'bi_report_generator' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="ti-pie-chart"></i><span class="hide-menu">{% trans 'BI Report Generator' %} </span></a></li>{% endif %}
-                        {% if 'predictive_analytics' in MENU_NEED_URL %}
-						<li class="{% block predictive_analytics_tab_color %}{% endblock %}"> <a href="{% url 'predictive_analytics' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="icon-graph"></i><span class="hide-menu">{% trans 'Predictive Analytics' %} </span></a></li>{% endif %}
-                        {% if 'device_groups' in MENU_NEED_URL or 'provisioning' in MENU_NEED_URL or 'myaccount:management' in MENU_NEED_URL or 'advance_tool' in MENU_NEED_URL%}
-                        <li class="nav-small-cap">--- {% trans 'SETTINGS' %}</li>
-                        {% if 'device_groups' in MENU_NEED_URL  %}
-						<li class="{% block device_groups_tab_color %}{% endblock %}"> <a href="{% url 'device_groups' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="ti-map-alt"></i><span class="hide-menu">{% trans 'Device Groups' %} </span></a></li>{% endif %}
-                        {% if 'provisioning' in MENU_NEED_URL  %}
-						<li class="{% block provisioning_tab_color %}{% endblock %}"> <a href="{% url 'provisioning' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="icon-plus"></i><span class="hide-menu">{% trans 'Provisioning' %} </span></a></li>{% endif %}
-                        {% if 'myaccount:management' in MENU_NEED_URL  %}
-						<li class="{% block management_tab_color_tab_color %}{% endblock %}"> <a href="{% url 'myaccount:management' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="fas fa-users"></i><span class="hide-menu">{% trans 'Management' %} </span></a></li>{% endif %}
-                        {% if 'advance_tool' in MENU_NEED_URL  %}
-                            <li class="{% block advance_tool_base_color %}{% endblock %}"> <a href="{% url 'advance_tool' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="fas fa-cogs"></i><span class="hide-menu">{% trans 'Advance Tool' %} </span></a></li>
-                        {% endif %}
-                            {% if 'accesslog:list' in MENU_NEED_URL  %}
-                            <li > <a href="{% url 'accesslog:list' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="fas fa-sticky-note"></i><span class="hide-menu">{% trans 'Access Log' %} </span></a></li>
-                            {% endif %}
-                        {% endif %}
+                        <li class="{% block management_tab_color_tab_color %}{% endblock %}"> <a href="{% url 'myaccount:management' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="fas fa-users"></i><span class="hide-menu">{% trans 'Management' %} </span></a></li>
+{#                        {% if 'alarms' in MENU_NEED_URL %}#}
+{#						<li class="{% block alarms_tab_color %}{% endblock %}"> <a href="{% url 'alarms' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="ti-bell"></i><span class="hide-menu">{% trans 'Alarms' %} </span></a></li>{% endif %}#}
+{#                        {% if 'complaint' in MENU_NEED_URL %}#}
+{#						<li class="{% block complaint_tab_color %}{% endblock %}"> <a href="{% url 'complaint' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="icon-earphones-alt"></i><span class="hide-menu">{% trans 'Complaints' %} </span></a></li>{% endif %}#}
+{#                        {% if 'device_business' in MENU_NEED_URL %}#}
+{#						<li class="{% block rules_and_automation_tab_color %}{% endblock %}"> <a href="{% url 'device_business' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="ti-panel"></i><span class="hide-menu">{% trans 'Businesses' %} </span></a></li>{% endif %}#}
+{#                        {% if  'single_device' in MENU_NEED_URL %}#}
+{#						<li class="{% block single_device_tab_color %}{% endblock %}"> <a href="{% url 'single_device' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="ti-view-list-alt"></i><span class="hide-menu">{% trans 'Device Information' %} </span></a></li>{% endif %}#}
+{#                        {% if 'device_diagnostics' in MENU_NEED_URL %}#}
+{#						<li class="{% block device_diagnostics_tab_color %}{% endblock %}"> <a href="{% url 'device_diagnostics' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="fas fa-diagnoses"></i><span class="hide-menu">{% trans 'Device Diagnosis' %} </span></a></li>{% endif %}#}
+{#                        {% if 'dynamic_protecting' in MENU_NEED_URL %}#}
+{#						<li class="{% block dynamic_protecting_tab_color %}{% endblock %}"> <a href="{% url 'dynamic_protecting' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="icon-shield"></i><span class="hide-menu">{% trans 'Dynamic Protecting' %} </span></a></li>{% endif %}#}
+{#                        {% if 'app_management' in MENU_NEED_URL %}#}
+{#						<li class="{% block app_management_tab_color %}{% endblock %}"> <a href="{% url 'app_management' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="icon-grid"></i><span class="hide-menu">{% trans 'APP Management' %} </span></a></li>{% endif %}#}
+{#                        {% if 'ota_upgrade' in MENU_NEED_URL %}#}
+{#						<li class="{% block ota_upgrade_tab_color %}{% endblock %}"> <a href="{% url 'ota_upgrade' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="fas fa-arrow-alt-circle-up"></i><span class="hide-menu">{% trans 'OTA Upgrade' %} </span></a></li>{% endif %}#}
+{#                        {% if isTimedTaskEnabled %}#}
+{#                        {% if 'timedtasks_task_list' in MENU_NEED_URL %}#}
+{#                        <li class="{% block timedtasks_tab_color %}{% endblock %}"> <a href="{% url 'timedtasks_task_list' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="far fa-clock"></i><span class="hide-menu">{% trans 'Timed Tasks' %} </span></a></li>{% endif %}#}
+{#                        {% endif %}#}
+{#                        {% if 'bi_report_generator' in MENU_NEED_URL %}#}
+{#						<li class="{% block bi_report_tab_color %}{% endblock %}"> <a href="{% url 'bi_report_generator' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="ti-pie-chart"></i><span class="hide-menu">{% trans 'BI Report Generator' %} </span></a></li>{% endif %}#}
+{#                        {% if 'predictive_analytics' in MENU_NEED_URL %}#}
+{#						<li class="{% block predictive_analytics_tab_color %}{% endblock %}"> <a href="{% url 'predictive_analytics' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="icon-graph"></i><span class="hide-menu">{% trans 'Predictive Analytics' %} </span></a></li>{% endif %}#}
+{#                        {% if 'device_groups' in MENU_NEED_URL or 'provisioning' in MENU_NEED_URL or 'myaccount:management' in MENU_NEED_URL or 'advance_tool' in MENU_NEED_URL%}#}
+{#                        <li class="nav-small-cap">--- {% trans 'SETTINGS' %}</li>#}
+{#                        {% if 'device_groups' in MENU_NEED_URL  %}#}
+{#						<li class="{% block device_groups_tab_color %}{% endblock %}"> <a href="{% url 'device_groups' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="ti-map-alt"></i><span class="hide-menu">{% trans 'Device Groups' %} </span></a></li>{% endif %}#}
+{#                        {% if 'provisioning' in MENU_NEED_URL  %}#}
+{#						<li class="{% block provisioning_tab_color %}{% endblock %}"> <a href="{% url 'provisioning' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="icon-plus"></i><span class="hide-menu">{% trans 'Provisioning' %} </span></a></li>{% endif %}#}
+{#                        {% if 'myaccount:management' in MENU_NEED_URL  %}#}
+{#						<li class="{% block management_tab_color_tab_color %}{% endblock %}"> <a href="{% url 'myaccount:management' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="fas fa-users"></i><span class="hide-menu">{% trans 'Management' %} </span></a></li>{% endif %}#}
+{#                        {% if 'advance_tool' in MENU_NEED_URL  %}#}
+{#                            <li class="{% block advance_tool_base_color %}{% endblock %}"> <a href="{% url 'advance_tool' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="fas fa-cogs"></i><span class="hide-menu">{% trans 'Advance Tool' %} </span></a></li>#}
+{#                        {% endif %}#}
+{#                            {% if 'accesslog:list' in MENU_NEED_URL  %}#}
+{#                            <li > <a href="{% url 'accesslog:list' %}" style="{% if "zh-hans" == LANGUAGE_CODE or "zh-hant" == LANGUAGE_CODE %}font-size:20px;{% endif %} "><i class="fas fa-sticky-note"></i><span class="hide-menu">{% trans 'Access Log' %} </span></a></li>#}
+{#                            {% endif %}#}
+{#                        {% endif %}#}
 
                     </ul>
                 </nav>

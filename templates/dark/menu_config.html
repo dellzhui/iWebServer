@@ -1,0 +1,115 @@
+{% extends 'dark/base.html' %}
+{% load static %}
+{% load i18n %}
+ {% block menu_config_tab_color_tab_color %}color:#01c0c8{% endblock %}
+
+{% block stylesheet %}
+<link href="{% static '/assets/node_modules/bootstrap-switch/bootstrap-switch.min.css' %}" rel="stylesheet">
+<link href="{% static 'dark/dist/css/pages/bootstrap-switch.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block script_content_body %}
+<script src="{% static '/assets/node_modules/bootstrap-switch/bootstrap-switch.min.js' %}"></script>
+<script type="text/javascript">
+    $(".bt-switch input[type='checkbox'], .bt-switch input[type='radio']").bootstrapSwitch();
+    var radioswitch = function() {
+        var bt = function() {
+            $(".radio-switch").on("switch-change", function() {
+                $(".radio-switch").bootstrapSwitch("toggleRadioState")
+            }), $(".radio-switch").on("switch-change", function() {
+                $(".radio-switch").bootstrapSwitch("toggleRadioStateAllowUncheck")
+            }), $(".radio-switch").on("switch-change", function() {
+                $(".radio-switch").bootstrapSwitch("toggleRadioStateAllowUncheck", !1)
+            })
+        };
+        return {
+            init: function() {
+                bt()
+            }
+        }
+    }();
+
+    $(document).ready(function() {
+        radioswitch.init();
+    });
+</script>
+{% endblock %}
+
+
+ {% block main-container %}
+     <div class="row page-titles">
+         <div class="col-md-5 align-self-center">
+             <h4 class="text-themecolor">{% trans 'Menu Config' %}</h4>
+         </div>
+         <div class="col-md-7 align-self-center text-right">
+             <div class="d-flex justify-content-end align-items-center">
+                 <ol class="breadcrumb">
+                     <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">{% trans 'Home' %}</a></li>
+                     <li class="breadcrumb-item"><a href="{% url 'menu_config_list' %}">{% trans 'Menu Config' %}</a></li>
+                     {% block breadcrumb %}
+                     {% endblock %}
+                 </ol>
+             </div>
+         </div>
+     </div>
+     {% block menu_config_content %}
+        <div class="row m-t-5">
+         <div class="col-lg-12">
+             <div class="card">
+                 <div class="card-body">
+                     <div class="table-responsive">
+                         <table class="table table-hover color-table info-table">
+                             <thead>
+                                 <tr>
+                                     <th>{% trans 'MenuName' %}</th>
+                                     <th>{% trans 'MenuUrl' %}</th>
+                                     <th>{% trans 'Level' %}</th>
+                                     <th>{% trans "Actions" %}</th>
+                                 </tr>
+                             </thead>
+                             <tbody>
+                                 {% for menu_page in menu_default %}
+                                    <tr>
+                                        <td>{{ menu_page.MenuName }}</td>
+                                        <td>{{ menu_page.MenuUrl }}</td>
+                                        <td>{{ menu_page.Level }}</td>
+                                        {% if menu_page.MenuUrl in menu_MenuUrl %}
+                                            <td class="bt-switch">
+                                                <form class="custom-control custom-checkbox" enctype='multipart/form-data' action="{% url 'menu_config_actions' %}" method="post">
+                                                {% csrf_token %}
+                                                    <input name="MenuName" value="{{ menu_page.MenuName }}" hidden>
+                                                    <input name="MenuUrl" value="{{ menu_page.MenuUrl }}" hidden>
+                                                    <input name="Sequence" value="{{ menu_page.Sequence }}" hidden>
+                                                    <input name="Level" value="{{ menu_page.Level }}" hidden>
+                                                    {% for menu in menu_datebase %}
+                                                        {% if menu.MenuUrl == menu_page.MenuUrl %}
+                                                            <input name="EnabledFlag" style="display: none" {% if menu.EnabledFlag is True  %}checked value="False" {% else %}value="True" {% endif %}  >
+                                                            <input id="EnabledFlag" type="checkbox" class="custom-control-input" data-size="small" {% if menu.EnabledFlag is True  %}checked value="False" {% else %}value="True"{% endif %} onchange="this.form.submit()">
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </form>
+                                            </td>
+                                        {% else %}
+                                            <td class="bt-switch">
+                                                <form class="custom-control custom-checkbox" enctype='multipart/form-data' action="{% url 'menu_config_actions' %}" method="post">
+                                                {% csrf_token %}
+                                                    <input name="MenuName" value="{{ menu_page.MenuName}}" hidden>
+                                                    <input name="MenuUrl" value="{{ menu_page.MenuUrl}}" hidden>
+                                                    <input name="Sequence" value="{{ menu_page.Sequence}}" hidden>
+                                                    <input name="Level" value="{{ menu_page.Level}}" hidden>
+                                                    <input name="EnabledFlag" style="display: none" {% if menu_page.EnabledFlag is True  %} checked value="False" {% else %}value="True"{% endif %}  >
+                                                    <input id="EnabledFlag" type="checkbox" class="custom-control-input" data-size="small" {% if menu_page.EnabledFlag is True  %}checked value="False"{% else %}value="True"{% endif %} onchange="this.form.submit()">
+                                                </form>
+                                            </td>
+                                        {% endif %}
+                                     </tr>
+                                 {% endfor %}
+                             </tbody>
+                         </table>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+     {% endblock %}
+ {% endblock %}
