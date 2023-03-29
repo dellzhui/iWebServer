@@ -15,18 +15,21 @@ Including another URLconf
 """
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 from django.urls import path, include
-from web.views.base import views
+from interface import views
 
 urlpatterns = [
-    path('web/api/token/', views.access_token, name='access_token'),
-    path('web/api/token/refresh/', views.refresh_token, name='refresh_token'),
+    path('auth/token', views.access_token, name='access_token'),
+    path('auth/token/refresh', views.refresh_token, name='refresh_token'),
     path('i18n/', include('django.conf.urls.i18n')),
+    path('web/api/', include('web.views.urls')),
 ]
 
 urlpatterns += i18n_patterns(
+    path('', login_required(views.dashboard), name='home'),
+    path('base/', include('interface.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('myaccount.urls')),
-    path('', include('web.views.urls')),
 )

@@ -3,6 +3,9 @@ import logging
 import time
 from json import JSONEncoder
 
+from django.http import JsonResponse
+from rest_framework.status import HTTP_200_OK, HTTP_500_INTERNAL_SERVER_ERROR
+
 from interface.utils.log_utils import loggerr
 
 # Log = loggerr(__name__).getLogger()
@@ -42,26 +45,32 @@ class IoTBase(JsonDatatypeBase):
                    setattr(self, key, IoTBase(value) if isinstance(value, dict) else value)
 
 
-class RequestRecord(JsonDatatypeBase):
-    def __init__(self, request=None, response=None, wechat_user_info=None):
-        self.RequestUrl = None
-        self.RequestMethod = None
-        self.RequestData = None
-        self.RequestTimestampMS = int(round(time.time()*1000))
-        self.ResponseCode = None
-        self.ResponseContent = None
-        self.WeChatId = None
-        self.WeChatNickName = None
+class IoTSuccessResponse(JsonDatatypeBase):
+    def __init__(self):
+        JsonDatatypeBase.__init__(self)
 
-        if(request != None):
-            self.RequestUrl = '{}{}'.format(request.META["PATH_INFO"], f'?{request.META["QUERY_STRING"]}' if (request.META["QUERY_STRING"] != '') else '')
-            self.RequestMethod = request.method
-            self.RequestData = json.dumps(request.data) if(isinstance(request.data, dict)) else str(request.data)
+    def GenResponse(self, data=None):
+        result = {'success': True, 'data': data if (data != None) else self.to_dict()}
+        Log.info('IoTSuccessResponse gen success response is {}'.format(result))
+        return JsonResponse(data=result, status=HTTP_200_OK)
 
-        if(response != None):
-            self.ResponseCode = response.status_code
-            self.ResponseContent = response.content.decode('utf-8') if(isinstance(response.content, bytes)) else str(response.content)
 
-        if(wechat_user_info != None):
-            self.WeChatId = wechat_user_info.openid
-            self.WeChatNickName = wechat_user_info.nickName
+class IoTErrorResponse(JsonDatatypeBase):
+    def __init__(self, error_code=-1, error_msg=None):
+        JsonDatatypeBase.__init__(self)
+        self.success = False
+        self.error_code = error_code
+        self.error_msg = error_msg
+
+    @staticmethod
+    def GenResponse(error_code=-1, error_msg=None):
+        result = IoTErrorResponse(error_code=error_code, error_msg=error_msg).to_dict()
+        Log.info('IoTErrorResponse gen error response is {}'.format(result))
+        return JsonResponse(data=result, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class AuthResponseInfo(IoTSuccessResponse):
+    def __init__(self, access=None, refresh=None):
+        self.access = access
+        self.refresh = refresh
+        IoTSuccessResponse.__init__(self)

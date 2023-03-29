@@ -6,6 +6,7 @@ class iWebServerBaseConfig:
     # log
     IWEBSERVER_LOG_DIR = os.environ.get('IWEBSERVER_LOG_DIR', Path(__file__).resolve().parent.parent.parent)
     IWEBSERVER_APP_DEBUG = True if (os.environ.get('IWEBSERVER_APP_DEBUG', 'False') == 'True') else False
+    IWEBSERVER_REQUEST_RECORD_ENABLE = True if (os.environ.get('IWEBSERVER_REQUEST_RECORD_ENABLE', 'False') == 'True') else False
 
     # mysql
     IWEBSERVER_DB_MYSQL_DBNAME = os.environ.get('IWEBSERVER_DB_MYSQL_DBNAME')
