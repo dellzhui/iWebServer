@@ -200,3 +200,12 @@ class PickleUtils:
         except Exception as err:
             Log.exception('GetObject err:[' + str(err) + ']')
         return None
+
+
+class ParasUtil:
+    @staticmethod
+    def is_missing_paras(paras: dict, target_paras: list):
+        for item in target_paras:
+            if(item not in paras):
+                return True
+        return False

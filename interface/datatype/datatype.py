@@ -6,6 +6,7 @@ from json import JSONEncoder
 from django.http import JsonResponse
 from rest_framework.status import HTTP_200_OK, HTTP_500_INTERNAL_SERVER_ERROR
 
+from interface.datatype.config import iWebServerBaseConfig
 from interface.utils.log_utils import loggerr
 
 # Log = loggerr(__name__).getLogger()
@@ -59,14 +60,18 @@ class IoTErrorResponse(JsonDatatypeBase):
     def __init__(self, error_code=-1, error_msg=None):
         JsonDatatypeBase.__init__(self)
         self.success = False
-        self.error_code = error_code
-        self.error_msg = error_msg
+        self.errorCode = error_code
+        self.errorMsg = error_msg
 
     @staticmethod
-    def GenResponse(error_code=-1, error_msg=None):
+    def GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_SERVER_INTERNAL_ERROR, error_msg='server internal error'):
         result = IoTErrorResponse(error_code=error_code, error_msg=error_msg).to_dict()
         Log.info('IoTErrorResponse gen error response is {}'.format(result))
         return JsonResponse(data=result, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @staticmethod
+    def GenParasErrorResponse(error_msg='invalid paras'):
+        return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_INVALID_PARAS, error_msg=error_msg)
 
 
 class AuthResponseInfo(IoTSuccessResponse):

@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'channels',
     'crispy_forms',
     'crispy_bootstrap4',
+    # 'corsheaders',
 
     'imqtt',
     'interface',
@@ -74,6 +75,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
@@ -196,6 +198,8 @@ USE_I18N = True
 USE_TZ = True
 
 MENU_NEED_URL = {}
+
+CORS_ALLOW_ALL_ORIGINS = False
 
 
 # Static files (CSS, JavaScript, Images)

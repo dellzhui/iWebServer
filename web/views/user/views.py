@@ -4,6 +4,8 @@ from rest_framework.generics import GenericAPIView
 
 from interface.datatype.config import iWebServerBaseConfig
 from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
+from interface.utils.UserControlUtils import UserUtils
+from interface.utils.tools import ParasUtil
 from interface.views import requires_admin_access, iwebserver_logger
 
 Log = logging.getLogger(__name__)
@@ -22,29 +24,85 @@ class iWebServerUserView(GenericAPIView):
             return IoTSuccessResponse().GenResponse(data=[{'username': item.username, 'email': item.email, 'userId': item.id, 'isAdmin': item.has_perm('interface.{}'.format(iWebServerBaseConfig.IWEBSERVER_PERMISSION_ADMIN_ACCESS))} for item in users])
         except Exception as err:
             Log.exception('iWebServerUserView get err:[' + str(err) + ']')
-        return IoTErrorResponse.GenResponse(error_msg='internal error')
+        return IoTErrorResponse.GenResponse()
 
-    # @ha_logger
-    # @requires_wechat_auth
-    # def post(self, request, wechat_user_info=None):
-    #     try:
-    #         qr = request.data.get('qr')
-    #         sharedCode = request.data.get('sharedCode')
-    #         bindding_util = BinddingUtil(wechat_user_info)
-    #         if(qr != None):
-    #             return bindding_util.bindFromQRCode(qr)
-    #         if(sharedCode != None):
-    #             return bindding_util.bindFromSharedCode(sharedCode)
-    #         return IoTErrorResponse.GenResponse(error_msg='no qr or sharedCode found')
-    #     except Exception as err:
-    #         Log.exception('KonkeCCUView post err:[' + str(err) + ']')
-    #     return IoTErrorResponse.GenResponse(error_msg='internal error')
-    #
-    # @ha_logger
-    # @requires_wechat_auth
-    # def delete(self, request, wechat_user_info=None):
-    #     try:
-    #         return BinddingUtil(wechat_user_info).unind(request.data.get('ccuId'))
-    #     except Exception as err:
-    #         Log.exception('KonkeCCUView delete err:[' + str(err) + ']')
-    #     return IoTErrorResponse.GenResponse(error_msg='internal error')
+    @iwebserver_logger
+    @requires_admin_access
+    def post(self, request):
+        try:
+            if(ParasUtil.is_missing_paras(request.data, ['email', 'username', 'password', 'confrimPassword'])):
+                return IoTErrorResponse.GenParasErrorResponse()
+
+            if(request.data['password'] == '' or request.data['password'] != request.data['confrimPassword']):
+                Log.error('password not match')
+                return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_PASSWORD_NOT_MATCH, error_msg='password not match')
+
+            user = User.objects.filter(username=request.data['username']).last()
+            if(user != None):
+                Log.error('user {} already presenced'.format(request.data['username']))
+                return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_USERNAME_ALREADY_PRESENCED, error_msg='username {} already presenced'.format(request.data['username']))
+
+            user = User.objects.filter(email=request.data['email']).last()
+            if (user != None):
+                Log.error('email {} already presenced'.format(request.data['email']))
+                return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_EMAIL_ALREADY_PRESENCED, error_msg='username {} already presenced'.format(request.data['email']))
+
+            User.objects.create_user(username=request.data['username'], password=request.data['password'], email=request.data['email'])
+            return IoTSuccessResponse().GenResponse()
+        except Exception as err:
+            Log.exception('iWebServerUserView post err:[' + str(err) + ']')
+        return IoTErrorResponse.GenResponse()
+
+    @iwebserver_logger
+    @requires_admin_access
+    def put(self, request):
+        try:
+            if (ParasUtil.is_missing_paras(request.query_params, ['userId'])):
+                return IoTErrorResponse.GenParasErrorResponse(error_msg='missing userId')
+            if (ParasUtil.is_missing_paras(request.data, ['password', 'confrimPassword'])):
+                return IoTErrorResponse.GenParasErrorResponse()
+
+            if (request.data['password'] == '' or request.data['password'] != request.data['confrimPassword']):
+                Log.error('password not match')
+                return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_PASSWORD_NOT_MATCH, error_msg='password not match')
+
+            user = User.objects.filter(id=request.query_params['userId']).last()
+            if (user == None):
+                Log.error('user {} not presenced'.format(request.query_params['userId']))
+                return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_USER_NOT_PRESENCED, error_msg='user not presenced')
+
+            if(user.username == 'AnonymousUser' or user.has_perm('interface.{}'.format(iWebServerBaseConfig.IWEBSERVER_PERMISSION_ADMIN_ACCESS))):
+                Log.error('can not change admin user')
+                return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_CHANGING_ADMIN_USER, error_msg='can not remove admin user')
+
+            user.set_password(request.data['password'])
+            user.save()
+            return IoTSuccessResponse().GenResponse()
+        except Exception as err:
+            Log.exception('iWebServerUserView put err:[' + str(err) + ']')
+        return IoTErrorResponse.GenResponse()
+
+    @iwebserver_logger
+    @requires_admin_access
+    def delete(self, request):
+        try:
+            if (ParasUtil.is_missing_paras(request.query_params, ['userId'])):
+                return IoTErrorResponse.GenParasErrorResponse()
+
+            user = User.objects.filter(id=request.query_params['userId']).last()
+            if (user == None):
+                Log.error('user {} not presenced'.format(request.query_params['userId']))
+                return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_USER_NOT_PRESENCED, error_msg='user not presenced')
+
+            if (user.username == 'AnonymousUser' or user.has_perm('interface.{}'.format(iWebServerBaseConfig.IWEBSERVER_PERMISSION_ADMIN_ACCESS))):
+                Log.error('can not change admin user')
+                return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_CHANGING_ADMIN_USER, error_msg='can not remove admin user')
+
+            # TODO: clear all
+            user.workstations.clear()
+            user.rooms.clear()
+            user.delete()
+            return IoTSuccessResponse().GenResponse()
+        except Exception as err:
+            Log.exception('iWebServerUserView put err:[' + str(err) + ']')
+        return IoTErrorResponse.GenResponse()
