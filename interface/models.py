@@ -4,6 +4,7 @@ from json import JSONEncoder
 from django.db import models
 from django.db.models.base import ModelState
 from django.utils.translation import gettext as _
+from interface.datatype.config import iWebServerBaseConfig
 
 
 class IdmsModelEncoder(JSONEncoder):
@@ -67,6 +68,6 @@ class UserControl(ModelCommonInfo):
         verbose_name = _('UserControl')
         verbose_name_plural = _('UserControl')
         permissions = (
-            ('all_access', 'can access all '),
-            ('regular_access', 'can access regular ')
+            (iWebServerBaseConfig.IWEBSERVER_PERMISSION_ADMIN_ACCESS, 'can access all '),
+            (iWebServerBaseConfig.IWEBSERVER_PERMISSION_REGULAR_ACCESS, 'can access regular ')
         )

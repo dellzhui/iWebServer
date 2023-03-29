@@ -1,10 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
 from interface.models import ModelCommonInfo
-
-
-# Create your models here.
 
 
 class UserProfile(ModelCommonInfo):

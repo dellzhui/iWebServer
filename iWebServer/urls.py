@@ -16,11 +16,11 @@ Including another URLconf
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from web.views.base import views
 
 urlpatterns = [
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('web/api/token/', views.access_token, name='access_token'),
+    path('web/api/token/refresh/', views.refresh_token, name='refresh_token'),
     path('i18n/', include('django.conf.urls.i18n')),
 ]
 
