@@ -1,10 +1,8 @@
 import logging
 from django.contrib.auth.models import User
 from rest_framework.generics import GenericAPIView
-
-from interface.datatype.config import iWebServerBaseConfig
+from custom_config.config import iWebServerConfig
 from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
-from interface.utils.UserControlUtils import UserUtils
 from interface.utils.tools import ParasUtil
 from interface.views import requires_admin_access, iwebserver_logger
 
@@ -21,7 +19,7 @@ class iWebServerUserView(GenericAPIView):
                 users = users.filter(username=request.query_params['username'])
             if ('email' in request.query_params):
                 users = users.filter(email=request.query_params['email'])
-            return IoTSuccessResponse().GenResponse(data=[{'username': item.username, 'email': item.email, 'userId': item.id, 'isAdmin': item.has_perm('interface.{}'.format(iWebServerBaseConfig.IWEBSERVER_PERMISSION_ADMIN_ACCESS))} for item in users])
+            return IoTSuccessResponse().GenResponse(data=[{'username': item.username, 'email': item.email, 'userId': item.id, 'isAdmin': item.has_perm('interface.{}'.format(iWebServerConfig.IWEBSERVER_PERMISSION_ADMIN_ACCESS))} for item in users])
         except Exception as err:
             Log.exception('iWebServerUserView get err:[' + str(err) + ']')
         return IoTErrorResponse.GenResponse()
@@ -35,17 +33,17 @@ class iWebServerUserView(GenericAPIView):
 
             if(request.data['password'] == '' or request.data['password'] != request.data['confrimPassword']):
                 Log.error('password not match')
-                return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_PASSWORD_NOT_MATCH, error_msg='password not match')
+                return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_PASSWORD_NOT_MATCH, error_msg='password not match')
 
             user = User.objects.filter(is_staff=False).exclude(username='AnonymousUser').filter(username=request.data['username']).last()
             if(user != None):
                 Log.error('user {} already presenced'.format(request.data['username']))
-                return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_USERNAME_ALREADY_PRESENCED, error_msg='username {} already presenced'.format(request.data['username']))
+                return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_USERNAME_ALREADY_PRESENCED, error_msg='username {} already presenced'.format(request.data['username']))
 
             user = User.objects.filter(is_staff=False).exclude(username='AnonymousUser').filter(email=request.data['email']).last()
             if (user != None):
                 Log.error('email {} already presenced'.format(request.data['email']))
-                return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_EMAIL_ALREADY_PRESENCED, error_msg='username {} already presenced'.format(request.data['email']))
+                return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_EMAIL_ALREADY_PRESENCED, error_msg='username {} already presenced'.format(request.data['email']))
 
             User.objects.create_user(username=request.data['username'], password=request.data['password'], email=request.data['email'])
             return IoTSuccessResponse().GenResponse()
@@ -64,16 +62,16 @@ class iWebServerUserView(GenericAPIView):
 
             if (request.data['password'] == '' or request.data['password'] != request.data['confrimPassword']):
                 Log.error('password not match')
-                return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_PASSWORD_NOT_MATCH, error_msg='password not match')
+                return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_PASSWORD_NOT_MATCH, error_msg='password not match')
 
             user = User.objects.filter(is_staff=False).exclude(username='AnonymousUser').filter(id=request.query_params['userId']).last()
             if (user == None):
                 Log.error('user {} not presenced'.format(request.query_params['userId']))
-                return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_USER_NOT_PRESENCED, error_msg='user not presenced')
+                return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_USER_NOT_PRESENCED, error_msg='user not presenced')
 
-            if(user.has_perm('interface.{}'.format(iWebServerBaseConfig.IWEBSERVER_PERMISSION_ADMIN_ACCESS))):
+            if(user.has_perm('interface.{}'.format(iWebServerConfig.IWEBSERVER_PERMISSION_ADMIN_ACCESS))):
                 Log.error('can not change admin user')
-                return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_CHANGING_ADMIN_USER, error_msg='can not remove admin user')
+                return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_CHANGING_ADMIN_USER, error_msg='can not remove admin user')
 
             user.set_password(request.data['password'])
             user.save()
@@ -92,11 +90,11 @@ class iWebServerUserView(GenericAPIView):
             user = User.objects.filter(is_staff=False).exclude(username='AnonymousUser').filter(id=request.query_params['userId']).last()
             if (user == None):
                 Log.error('user {} not presenced'.format(request.query_params['userId']))
-                return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_USER_NOT_PRESENCED, error_msg='user not presenced')
+                return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_USER_NOT_PRESENCED, error_msg='user not presenced')
 
-            if (user.has_perm('interface.{}'.format(iWebServerBaseConfig.IWEBSERVER_PERMISSION_ADMIN_ACCESS))):
+            if (user.has_perm('interface.{}'.format(iWebServerConfig.IWEBSERVER_PERMISSION_ADMIN_ACCESS))):
                 Log.error('can not change admin user')
-                return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_CHANGING_ADMIN_USER, error_msg='can not remove admin user')
+                return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_CHANGING_ADMIN_USER, error_msg='can not remove admin user')
 
             # TODO: clear all
             user.workstations.clear()
@@ -104,5 +102,5 @@ class iWebServerUserView(GenericAPIView):
             user.delete()
             return IoTSuccessResponse().GenResponse()
         except Exception as err:
-            Log.exception('iWebServerUserView put err:[' + str(err) + ']')
+            Log.exception('iWebServerUserView delete err:[' + str(err) + ']')
         return IoTErrorResponse.GenResponse()

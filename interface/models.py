@@ -74,16 +74,18 @@ class UserControl(ModelCommonInfo):
 
 
 class RequestRecordInfo(ModelCommonInfo):
-    requestUserName = models.CharField(null=True, blank=True, db_index=True, max_length=256, verbose_name=_('Request UserName'))
-    requestUrl = models.CharField(null=True, blank=True, max_length=2048, verbose_name=_('Request  Url'))
-    requestMethod = models.CharField(null=True, blank=True, db_index=True, max_length=16, verbose_name=_('Request  Method'))
+    requestUserId = models.BigIntegerField(null=True, blank=True, db_index=True, verbose_name=_('Request UserId'))
+    requestUsername = models.CharField(null=True, blank=True, max_length=256, verbose_name=_('Request UserName'))
+    requestUrl = models.CharField(null=True, blank=True, max_length=2048, verbose_name=_('Request Url'))
+    requestMethod = models.CharField(null=True, blank=True, db_index=True, max_length=16, verbose_name=_('Request Method'))
     requestData = models.TextField(null=True, blank=True, verbose_name=_('Request Data'))
     responseCode = models.IntegerField(null=True, blank=True, verbose_name=_('Response Code'))
     responseContent = models.TextField(null=True, blank=True, verbose_name=_('Response Content'))
 
     def from_request_and_response(self, request, response):
         if (request != None):
-            self.requestUserName = request.user.username
+            self.requestUserId = request.user.id
+            self.requestUsername = request.user.username
             self.requestUrl = '{}{}'.format(request.META["PATH_INFO"], f'?{request.META["QUERY_STRING"]}' if (request.META["QUERY_STRING"] != '') else '')
             self.requestMethod = request.method
             self.requestData = json.dumps(request.data) if (isinstance(request.data, dict)) else str(request.data)

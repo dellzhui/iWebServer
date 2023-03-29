@@ -1,7 +1,6 @@
-from django.contrib.auth.decorators import login_required
-from django.urls import path
+from django.urls import re_path
 from web.views.workstation import views
 
-# urlpatterns = [
-#     path('', login_required(views.dashboard), name='dashboard'),
-# ]
+urlpatterns = [
+    re_path(r'^workstation$', views.iWebServerWorkstationView.as_view()),
+]
