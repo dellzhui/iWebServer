@@ -37,12 +37,12 @@ class iWebServerUserView(GenericAPIView):
                 Log.error('password not match')
                 return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_PASSWORD_NOT_MATCH, error_msg='password not match')
 
-            user = User.objects.filter(username=request.data['username']).last()
+            user = User.objects.filter(is_staff=False).exclude(username='AnonymousUser').filter(username=request.data['username']).last()
             if(user != None):
                 Log.error('user {} already presenced'.format(request.data['username']))
                 return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_USERNAME_ALREADY_PRESENCED, error_msg='username {} already presenced'.format(request.data['username']))
 
-            user = User.objects.filter(email=request.data['email']).last()
+            user = User.objects.filter(is_staff=False).exclude(username='AnonymousUser').filter(email=request.data['email']).last()
             if (user != None):
                 Log.error('email {} already presenced'.format(request.data['email']))
                 return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_EMAIL_ALREADY_PRESENCED, error_msg='username {} already presenced'.format(request.data['email']))
@@ -66,12 +66,12 @@ class iWebServerUserView(GenericAPIView):
                 Log.error('password not match')
                 return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_PASSWORD_NOT_MATCH, error_msg='password not match')
 
-            user = User.objects.filter(id=request.query_params['userId']).last()
+            user = User.objects.filter(is_staff=False).exclude(username='AnonymousUser').filter(id=request.query_params['userId']).last()
             if (user == None):
                 Log.error('user {} not presenced'.format(request.query_params['userId']))
                 return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_USER_NOT_PRESENCED, error_msg='user not presenced')
 
-            if(user.username == 'AnonymousUser' or user.has_perm('interface.{}'.format(iWebServerBaseConfig.IWEBSERVER_PERMISSION_ADMIN_ACCESS))):
+            if(user.has_perm('interface.{}'.format(iWebServerBaseConfig.IWEBSERVER_PERMISSION_ADMIN_ACCESS))):
                 Log.error('can not change admin user')
                 return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_CHANGING_ADMIN_USER, error_msg='can not remove admin user')
 
@@ -89,12 +89,12 @@ class iWebServerUserView(GenericAPIView):
             if (ParasUtil.is_missing_paras(request.query_params, ['userId'])):
                 return IoTErrorResponse.GenParasErrorResponse()
 
-            user = User.objects.filter(id=request.query_params['userId']).last()
+            user = User.objects.filter(is_staff=False).exclude(username='AnonymousUser').filter(id=request.query_params['userId']).last()
             if (user == None):
                 Log.error('user {} not presenced'.format(request.query_params['userId']))
                 return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_USER_NOT_PRESENCED, error_msg='user not presenced')
 
-            if (user.username == 'AnonymousUser' or user.has_perm('interface.{}'.format(iWebServerBaseConfig.IWEBSERVER_PERMISSION_ADMIN_ACCESS))):
+            if (user.has_perm('interface.{}'.format(iWebServerBaseConfig.IWEBSERVER_PERMISSION_ADMIN_ACCESS))):
                 Log.error('can not change admin user')
                 return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_CHANGING_ADMIN_USER, error_msg='can not remove admin user')
 
