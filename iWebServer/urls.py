@@ -32,9 +32,3 @@ urlpatterns += i18n_patterns(
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('myaccount.urls')),
 )
-
-#########################################################
-urlpatterns += [
-    path('web/api/', include('web.views.urls')),
-]
-#########################################################
