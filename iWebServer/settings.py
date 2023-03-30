@@ -31,6 +31,7 @@ SECRET_KEY = 'django-insecure-**qs6ui9h%oae9ks)boqjy#644fwdgtcpb6eh73210y%*fepv=
 DEBUG = iWebServerBaseConfig.IWEBSERVER_APP_DEBUG
 
 ALLOWED_HOSTS = ['*']
+# CSRF_TRUSTED_ORIGINS = ['http://localhost:4000']
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
 
 # for allauth
@@ -64,6 +65,7 @@ INSTALLED_APPS = [
     'channels',
     'crispy_forms',
     'crispy_bootstrap4',
+    #'corsheaders',
 
     'interface',
     'websocket',
@@ -118,7 +120,7 @@ REST_FRAMEWORK = {
         "rest_framework.parsers.JSONParser"
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTTokenUserAuthentication',
     ],
 }
@@ -195,6 +197,8 @@ USE_I18N = True
 USE_TZ = True
 
 MENU_NEED_URL = {}
+
+#CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Static files (CSS, JavaScript, Images)
