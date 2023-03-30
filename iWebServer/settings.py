@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	'django.contrib.sites',
+    'django.contrib.sites',
     'myaccount',
     'allauth',
     'allauth.account',
@@ -64,11 +64,12 @@ INSTALLED_APPS = [
     'channels',
     'crispy_forms',
     'crispy_bootstrap4',
-    # 'corsheaders',
 
     'interface',
-    'web',
     'websocket',
+#########################################################
+    'web',
+#########################################################
 ]
 
 MIDDLEWARE = [
@@ -197,8 +198,6 @@ USE_I18N = True
 USE_TZ = True
 
 MENU_NEED_URL = {}
-
-CORS_ALLOW_ALL_ORIGINS = False
 
 
 # Static files (CSS, JavaScript, Images)

@@ -23,7 +23,6 @@ urlpatterns = [
     path('auth/token', views.access_token, name='access_token'),
     path('auth/token/refresh', views.refresh_token, name='refresh_token'),
     path('i18n/', include('django.conf.urls.i18n')),
-    path('web/api/', include('web.views.urls')),
 ]
 
 urlpatterns += i18n_patterns(
@@ -33,3 +32,9 @@ urlpatterns += i18n_patterns(
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('myaccount.urls')),
 )
+
+#########################################################
+urlpatterns += [
+    path('web/api/', include('web.views.urls')),
+]
+#########################################################
