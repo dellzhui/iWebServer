@@ -5,6 +5,13 @@ from interface.models import ModelCommonInfo
 from django.utils.translation import gettext as _
 
 
+DEVICE_TYPE_CHOICES = (
+    ('hub', _('HUB Device')),
+    ('container', _('Container')),
+    ('stb', _('STB Device'))
+)
+
+
 class WorkstationInfo(ModelCommonInfo):
     class Meta:
         verbose_name = _('WorkstationInfo')
@@ -39,3 +46,36 @@ class RoomInfo(ModelCommonInfo):
 
     def to_dict(self):
         return {'workstationId': self.workstation_id, 'roomId': self.roomId, 'roomName': self.name, 'roomJoinPin': self.roomJoinPin, 'createTime': self.createTime, 'updateTime': self.updateTime}
+
+
+class DeviceInfo(ModelCommonInfo):
+    class Meta:
+        verbose_name = _('DeviceInfo')
+        verbose_name_plural = _('DeviceInfo')
+        permissions = (
+            (iWebServerConfig.IWEBSERVER_PERMISSION_DEVICE_ACCESS, 'can access device'),
+        )
+
+    productKey = models.CharField(null=True, blank=True, db_index=True, max_length=256, verbose_name=_('Product Key'))
+    deviceName = models.CharField(null=True, blank=True, db_index=True, max_length=256, verbose_name=_('Device Name'))
+    deviceSecret = models.CharField(null=True, blank=True, db_index=True, max_length=256, verbose_name=_('Device Secret'))
+    macAddress = models.CharField(null=True, blank=True, db_index=True, max_length=256, verbose_name=_('Mac Address'))
+    serialNumber = models.CharField(null=True, blank=True, db_index=True, max_length=256, verbose_name=_('Serial Number'))
+    deviceType = models.CharField(null=True, blank=True, db_index=True, choices=DEVICE_TYPE_CHOICES, max_length=32, verbose_name=_('Device Type'))
+
+    room = models.ForeignKey(RoomInfo, null=True, blank=True, related_name="devices", on_delete=models.CASCADE)
+    workstation = models.ForeignKey(WorkstationInfo, null=True, blank=True, related_name="devices", on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, null=True, blank=True, related_name="devices", on_delete=models.CASCADE)
+
+    def to_dict(self):
+        return {
+            'workstationId': self.workstation_id,
+            'roomId': self.room_id,
+            'deviceId': self.id,
+            'deviceName': self.deviceName,
+            'macAddress': self.macAddress,
+            'serialNumber': self.serialNumber,
+            'deviceType': self.deviceType,
+            'createTime': self.createTime,
+            'updateTime': self.updateTime
+        }

@@ -1,4 +1,7 @@
 import logging
+
+from django.contrib.auth.models import User
+from guardian.shortcuts import assign_perm
 from rest_framework.generics import GenericAPIView
 from pcd.config import iWebServerConfig
 from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
@@ -33,6 +36,7 @@ class iWebServerWorkstationView(GenericAPIView):
                 return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_WORKSTATION_ALREADY_PRESENCED, error_msg='workstation {} already presenced'.format(request.data['workstationName']))
 
             workstation = WorkstationInfo.objects.create(name=request.data['workstationName'], owner_id=request.user.id)
+            # assign_perm('pcd.{}'.format(iWebServerConfig.IWEBSERVER_PERMISSION_WORKSTATION_ACCESS), User.objects.filter(id=request.user.id).last(), workstation)
             return IoTSuccessResponse().GenResponse(data=workstation.to_dict())
         except Exception as err:
             Log.exception('iWebServerWorkstationView post err:[' + str(err) + ']')

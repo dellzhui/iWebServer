@@ -93,7 +93,7 @@ class JanusHTTPRequestUtil:
                         "bitrate": 9000000,
                         "publishers": 100
                     },
-                    "transaction": "818S7yY3kef6"
+                    "transaction": CommonTools.getRamdomString(12)
                 }
                 result = self.do_post(url='/{}/{}'.format(session_id, attach_id), data=data)
                 if (result == None or not self.__is_successful_response(result)):
@@ -102,6 +102,33 @@ class JanusHTTPRequestUtil:
                 Log.info('create room {} succeed'.format(roomId))
                 return True
         Log.error('create video room failed')
+        return False
+
+    def destroy_video_room(self, roomId: int, roomJoinPin):
+        if(roomId == None or roomJoinPin == None or roomJoinPin == ''):
+            Log.error('invalid paras')
+            return None
+        session_id = self.create_session()
+        if(session_id != None):
+            attach_id = self.attach_video_room(session_id)
+            if(attach_id != None):
+                data = {
+                    "janus": "message",
+                    "body": {
+                        "request": "destroy",
+                        "room": roomId,
+                        "permanent": True,
+                        "secret": roomJoinPin
+                    },
+                    "transaction": CommonTools.getRamdomString(12)
+                }
+                result = self.do_post(url='/{}/{}'.format(session_id, attach_id), data=data)
+                if (result == None or not self.__is_successful_response(result)):
+                    Log.error('destroy video room failed')
+                    return None
+                Log.info('destroy room {} succeed'.format(roomId))
+                return True
+        Log.error('destroy video room failed')
         return False
 
 

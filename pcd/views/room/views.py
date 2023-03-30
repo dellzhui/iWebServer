@@ -1,4 +1,7 @@
 import logging
+
+from django.contrib.auth.models import User
+from guardian.shortcuts import assign_perm
 from rest_framework.generics import GenericAPIView
 from pcd.config import iWebServerConfig
 from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
@@ -46,9 +49,10 @@ class iWebServerRoomView(GenericAPIView):
             janus_util = JanusHTTPRequestUtil()
             if(janus_util.create_video_room(roomId=room.roomId, roomJoinPin=room.roomJoinPin)):
                 room.save()
+                # assign_perm('pcd.{}'.format(iWebServerConfig.IWEBSERVER_PERMISSION_ROOM_ACCESS), User.objects.filter(id=request.user.id).last(), room)
                 return IoTSuccessResponse().GenResponse(data=room.to_dict())
             room.delete()
-            return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_CREATE_ROOM_FAILED, error_msg='room {} already presenced'.format(request.data['roomName']))
+            return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_CREATE_ROOM_FAILED, error_msg='create janus rom failed')
         except Exception as err:
             Log.exception('iWebServerRoomView post err:[' + str(err) + ']')
         return IoTErrorResponse.GenResponse()
@@ -94,9 +98,12 @@ class iWebServerRoomView(GenericAPIView):
                 Log.error('room {} not presenced'.format(request.query_params['roomId']))
                 return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_WORKSTATION_NOT_PRESENCED, error_msg='room not presenced')
 
-            # TODO: clear all
-            room.delete()
-            return IoTSuccessResponse().GenResponse()
+            janus_util = JanusHTTPRequestUtil()
+            if(janus_util.destroy_video_room(room.roomId, room.roomJoinPin)):
+                # TODO: clear all
+                room.delete()
+                return IoTSuccessResponse().GenResponse()
+            return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DESTROY_ROOM_FAILED, error_msg='destroy janus room failed')
         except Exception as err:
             Log.exception('iWebServerRoomView delete err:[' + str(err) + ']')
         return IoTErrorResponse.GenResponse()
