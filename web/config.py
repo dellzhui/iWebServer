@@ -1,0 +1,17 @@
+from interface.datatype.config import iWebServerBaseConfig
+
+
+class iWebServerConfig(iWebServerBaseConfig):
+    # You can customize the desired configuration here
+
+    # permission
+    IWEBSERVER_PERMISSION_WORKSTATION_ACCESS = 'workstation_access'
+    IWEBSERVER_PERMISSION_ROOM_ACCESS = 'room_access'
+
+    # Error Code
+    IWEBSERVER_ERROR_CODE_EMAIL_ALREADY_PRESENCED = -1107
+    IWEBSERVER_ERROR_CODE_USERNAME_ALREADY_PRESENCED = -1108
+    IWEBSERVER_ERROR_CODE_PASSWORD_NOT_MATCH = -1109
+    IWEBSERVER_ERROR_CODE_CHANGING_ADMIN_USER = -1110
+    IWEBSERVER_ERROR_CODE_WORKSTATION_ALREADY_PRESENCED = -1111
+    IWEBSERVER_ERROR_CODE_WORKSTATION_NOT_PRESENCED = -1112
