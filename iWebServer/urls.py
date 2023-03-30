@@ -35,6 +35,6 @@ urlpatterns += i18n_patterns(
 
 #########################################################
 urlpatterns += [
-    path('web/api/', include('web.views.urls')),
+    path('web/api/', include('pcd.views.urls')),
 ]
 #########################################################

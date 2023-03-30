@@ -1,10 +1,10 @@
 import logging
 from rest_framework.generics import GenericAPIView
-from web.config import iWebServerConfig
+from pcd.config import iWebServerConfig
 from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
 from interface.utils.tools import ParasUtil
 from interface.views import iwebserver_logger
-from web.models import WorkstationInfo
+from pcd.models import WorkstationInfo
 
 Log = logging.getLogger(__name__)
 
