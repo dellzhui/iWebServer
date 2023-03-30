@@ -33,7 +33,6 @@ class iWebServerWorkstationView(GenericAPIView):
                 return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_WORKSTATION_ALREADY_PRESENCED, error_msg='workstation {} already presenced'.format(request.data['workstationName']))
 
             workstation = WorkstationInfo.objects.create(name=request.data['workstationName'], owner_id=request.user.id)
-            workstation.save()
             return IoTSuccessResponse().GenResponse(data=workstation.to_dict())
         except Exception as err:
             Log.exception('iWebServerWorkstationView post err:[' + str(err) + ']')

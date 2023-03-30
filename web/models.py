@@ -36,3 +36,6 @@ class RoomInfo(ModelCommonInfo):
 
     workstation = models.ForeignKey(WorkstationInfo, null=True, blank=True, related_name="rooms", on_delete=models.CASCADE)
     owner = models.ForeignKey(User, null=True, blank=True, related_name="rooms", on_delete=models.CASCADE)
+
+    def to_dict(self):
+        return {'roomId': self.roomId, 'roomName': self.name, 'roomJoinPin': self.roomJoinPin, 'createTime': self.createTime, 'updateTime': self.updateTime}
