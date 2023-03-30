@@ -2,9 +2,10 @@ import logging
 from rest_framework.generics import GenericAPIView
 from pcd.config import iWebServerConfig
 from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
-from interface.utils.tools import ParasUtil
+from interface.utils.tools import ParasUtil, CommonTools
 from interface.views import iwebserver_logger
 from pcd.models import RoomInfo
+from pcd.utils.janus_utils import JanusHTTPRequestUtil
 
 Log = logging.getLogger(__name__)
 
@@ -39,10 +40,15 @@ class iWebServerRoomView(GenericAPIView):
                 return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_ROOM_ALREADY_PRESENCED, error_msg='room {} already presenced'.format(request.data['roomName']))
 
             room = RoomInfo(name=request.data['roomName'], workstation_id=request.query_params['workstationId'], owner_id=request.user.id)
-            ### TODO: Call the API of janus here, create a janus room, get roomId, roomJoinPin
-
             room.save()
-            return IoTSuccessResponse().GenResponse(data=room.to_dict())
+            room.roomId = room.id + 2000
+            room.roomJoinPin = CommonTools.getRamdomString(16)
+            janus_util = JanusHTTPRequestUtil()
+            if(janus_util.create_video_room(roomId=room.roomId, roomJoinPin=room.roomJoinPin)):
+                room.save()
+                return IoTSuccessResponse().GenResponse(data=room.to_dict())
+            room.delete()
+            return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_CREATE_ROOM_FAILED, error_msg='room {} already presenced'.format(request.data['roomName']))
         except Exception as err:
             Log.exception('iWebServerRoomView post err:[' + str(err) + ']')
         return IoTErrorResponse.GenResponse()

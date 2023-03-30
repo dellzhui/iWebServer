@@ -1,3 +1,5 @@
+import os
+
 from interface.datatype.config import iWebServerBaseConfig
 
 
@@ -17,3 +19,7 @@ class iWebServerConfig(iWebServerBaseConfig):
     IWEBSERVER_ERROR_CODE_WORKSTATION_NOT_PRESENCED = -1112
     IWEBSERVER_ERROR_CODE_ROOM_ALREADY_PRESENCED = -1113
     IWEBSERVER_ERROR_CODE_ROOM_NOT_PRESENCED = -1114
+    IWEBSERVER_ERROR_CODE_CREATE_ROOM_FAILED = -1115
+
+    # janus
+    IWEBSERVER_JANUS_BASE_URL = os.environ.get('IWEBSERVER_JANUS_BASE_URL')

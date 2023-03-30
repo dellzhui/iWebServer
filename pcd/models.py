@@ -31,7 +31,7 @@ class RoomInfo(ModelCommonInfo):
 
     name = models.CharField(null=True, blank=True, db_index=True, max_length=256, verbose_name=_('Room Name'))
     roomId = models.BigIntegerField(null=True, blank=True, db_index=True, verbose_name=_('Room Id'))
-    roomJoinPin = models.BigIntegerField(null=True, blank=True, db_index=True, verbose_name=_('Room Join Pin'))
+    roomJoinPin = models.CharField(null=True, blank=True, max_length=256, verbose_name=_('Room Secret'))
     isPrivate = models.BooleanField(null=True, blank=True, default=True, db_index=True, verbose_name=_('Is Private'))
 
     workstation = models.ForeignKey(WorkstationInfo, null=True, blank=True, related_name="rooms", on_delete=models.CASCADE)
