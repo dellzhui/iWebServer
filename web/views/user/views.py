@@ -1,7 +1,7 @@
 import logging
 from django.contrib.auth.models import User
 from rest_framework.generics import GenericAPIView
-from custom_config.config import iWebServerConfig
+from web.config import iWebServerConfig
 from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
 from interface.utils.tools import ParasUtil
 from interface.views import requires_admin_access, iwebserver_logger

@@ -66,7 +66,6 @@ INSTALLED_APPS = [
     'crispy_bootstrap4',
     # 'corsheaders',
 
-    'imqtt',
     'interface',
     'web',
     'websocket',

@@ -7,7 +7,7 @@ from rest_framework_simplejwt.tokens import UntypedToken
 from jwt import decode as jwt_decode
 
 from iWebServer import settings
-from imqtt.utils.iot_utils import IoTUtils
+from interface.utils.iot_utils import IoTUtils
 
 Log = logging.getLogger(__name__)
 

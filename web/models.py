@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-from custom_config.config import iWebServerConfig
+from web.config import iWebServerConfig
 from interface.models import ModelCommonInfo
 from django.utils.translation import gettext as _
 
