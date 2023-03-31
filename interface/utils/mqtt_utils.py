@@ -1,9 +1,9 @@
 import logging
-import os
 import re
 import ssl
 import time
 from paho.mqtt import client as mqtt
+from interface.config import iWebServerBaseConfig
 from interface.utils.tools import DBHandleTask
 
 Log = logging.getLogger(__name__)
@@ -28,11 +28,11 @@ class MqttUtils:
         self.__stopped = False
         self.__connected = False
 
-        self.CA = os.environ.get('IDMS_IOT_TLS_CA_PATH', '/home/yang/idms/bin/ca/ca.crt')
-        self.Cert = os.environ.get('IDMS_IOT_TLS_CERT_PATH', '/home/yang/idms/bin/ca/client.crt')
-        self.PrivateKey = os.environ.get('IDMS_IOT_TLS_PRIVATE_KEY_PATH', '/home/yang/idms/bin/ca/client.key')
-        self.IOT_TLS_FLAG = True if (int(os.environ.get('IDMS_IOT_TLS_FLAG', 0)) == 1) else False
-        self.IOT_TLS_PORT = os.environ.get('IDMS_IOT_TLS_PORT', '')
+        self.CA = iWebServerBaseConfig.IWEBSERVER_MQTT_TLS_CA_PATH
+        self.Cert = iWebServerBaseConfig.IWEBSERVER_MQTT_TLS_CERT_PATH
+        self.PrivateKey = iWebServerBaseConfig.IWEBSERVER_MQTT_TLS_PRIVATE_KEY_PATH
+        self.IOT_TLS_FLAG = iWebServerBaseConfig.IWEBSERVER_MQTT_TLS_ENABLE
+        self.IOT_TLS_PORT = iWebServerBaseConfig.IWEBSERVER_MQTT_TLS_PORT
         self.DEFAULT_IOT_TLS_PORT = 8883
 
     def __on_log(self, client, userdata, level, buf):

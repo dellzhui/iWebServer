@@ -4,7 +4,7 @@ from json import JSONEncoder
 from django.db import models
 from django.db.models.base import ModelState
 from django.utils.translation import gettext as _
-from interface.datatype.config import iWebServerBaseConfig
+from interface.config import iWebServerBaseConfig
 
 
 class IdmsModelEncoder(JSONEncoder):

@@ -3,6 +3,7 @@ import logging
 import os
 import random
 
+from interface.config import iWebServerBaseConfig
 from interface.utils.mqtt_utils import MqttUtils
 
 Log = logging.getLogger(__name__)
@@ -15,7 +16,7 @@ class IoTUtils:
         self.__on_message_cb = on_message_cb
         self.__sub_topic_list = sub_topic_list
 
-        self.MqttServerUrlList = os.environ.get('IDMS_IOT_MQTT_SERVER_LIST', '')
+        self.MqttServerUrlList = iWebServerBaseConfig.IWEBSERVER_MQTT_SERVER_LIST
         self.MqttKeepAliveTime_S = 60
 
         self.__mqtt_utils = []

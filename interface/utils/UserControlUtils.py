@@ -3,7 +3,7 @@ from django.contrib import auth
 from django.contrib.auth.models import Group, User
 from django.shortcuts import get_object_or_404
 from guardian.shortcuts import get_objects_for_user, assign_perm, remove_perm, get_perms
-from interface.datatype.config import iWebServerBaseConfig
+from interface.config import iWebServerBaseConfig
 from interface.models import UserControl
 
 Log = logging.getLogger(__name__)

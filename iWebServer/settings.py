@@ -13,7 +13,7 @@ import os
 import sys
 from datetime import timedelta
 from pathlib import Path
-from interface.datatype.config import iWebServerBaseConfig
+from interface.config import iWebServerBaseConfig
 from django.utils.translation import gettext_lazy as _
 
 
