@@ -7,22 +7,26 @@ from rest_framework_simplejwt.tokens import UntypedToken
 from jwt import decode as jwt_decode
 
 from iWebServer import settings
+from interface.config import iWebServerBaseConfig
 from interface.utils.iot_utils import IoTUtils
 
 Log = logging.getLogger(__name__)
 
 
-class xChatConsumer(WebsocketConsumer):
+class iWebServerConsumer(WebsocketConsumer):
     def __init__(self):
-        self.__user: User | None = None
-        self.__iot_util: IoTUtils | None = None
-        self.__sub_topic_list = []
+        self._user: User | None = None
+        self._iot_util: IoTUtils | None = None
+        self._sub_topic_list = []
         super().__init__()
 
-    def __on_mqtt_msg_cb(self, topic, msg):
+    def _on_mqtt_msg_cb(self, topic, msg):
         self.send(msg)
 
-    def __get_sub_topic_list(self):
+    def _handle_ws_message(self, text_data_json: dict=None, bytes_data=None):
+        return self.send(text_data=json.dumps({'message': 'succeed'}))
+
+    def _get_sub_topic_list(self):
         #TODO:
         return None
 
@@ -30,17 +34,17 @@ class xChatConsumer(WebsocketConsumer):
         self.accept()
 
     def disconnect(self, close_code):
-        Log.info('{} disconnected'.format(self.__user.username if(self.__user != None) else None))
-        if (self.__iot_util != None):
-            self.__iot_util.StopMqttTask()
-        self.__user = None
+        Log.info('{} disconnected'.format(self._user.username if(self._user != None) else None))
+        if (self._iot_util != None):
+            self._iot_util.StopMqttTask()
+        self._user = None
 
     def receive(self, text_data=None, bytes_data=None):
         try:
             Log.info('receive {}'.format(text_data))
             text_data_json = json.loads(text_data)
             type = text_data_json['type']
-            if (self.__user == None):
+            if (self._user == None):
                 if (type != 'auth'):
                     Log.error('not authed')
                     self.send(text_data=json.dumps({
@@ -52,34 +56,23 @@ class xChatConsumer(WebsocketConsumer):
                     UntypedToken(access_token)
                 except (InvalidToken, TokenError) as err:
                     Log.exception('token is invalid, err:[' + str(err) + ']')
-                    self.send(text_data=json.dumps({
-                        'message': 'token is invalid'
-                    }))
+                    self.send(text_data=json.dumps({'message': 'token is invalid'}))
                     return self.close()
-                else:
-                    decoded_data = jwt_decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
-                    self.__user = User.objects.filter(id=decoded_data["user_id"]).last()
-                    if(self.__user != None):
-                        self.__get_sub_topic_list()
-                        self.__iot_util = IoTUtils(DeviceName=None, DeviceSecret=None, on_message_cb=self.__on_mqtt_msg_cb, sub_topic_list=self.__sub_topic_list)
-                        self.__iot_util.StartMqttTaskAsync()
-                        return self.send(text_data=json.dumps({
-                            'message': 'auth succeed'
-                        }))
+                decoded_data = jwt_decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
+                self._user = User.objects.filter(id=decoded_data["user_id"]).last()
+                if(self._user != None):
+                    self._get_sub_topic_list()
+                    self._iot_util = IoTUtils(DeviceName=iWebServerBaseConfig.IWEBSERVER_MQTT_USERNAME, DeviceSecret=iWebServerBaseConfig.IWEBSERVER_MQTT_PASSWORD, on_message_cb=self._on_mqtt_msg_cb, sub_topic_list=self._sub_topic_list)
+                    self._iot_util.StartMqttTaskAsync()
+                    return self.send(text_data=json.dumps({'message': 'auth succeed'}))
 
-            if (self.__user == None):
+            if (self._user == None):
                 Log.error('not authed')
-                self.send(text_data=json.dumps({
-                    'message': 'not authed'
-                }))
+                self.send(text_data=json.dumps({'message': 'not authed'}))
                 return self.close()
 
-            return self.send(text_data=json.dumps({
-                'message': 'succeed'
-            }))
+            return self._handle_ws_message(text_data_json, bytes_data)
         except Exception as err:
             Log.exception('receive err:[' + str(err) + ']')
-            self.send(text_data=json.dumps({
-                'message': 'internal error'
-            }))
+            self.send(text_data=json.dumps({'message': 'internal error'}))
         return self.close()
