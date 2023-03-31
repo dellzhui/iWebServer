@@ -1,32 +1,14 @@
 import logging
-import requests
+from interface.utils.http_util import HTTPRequestUtil
 from interface.utils.tools import CommonTools
 from pcd.config import iWebServerConfig
 
 Log = logging.getLogger(__name__)
 
 
-class JanusHTTPRequestUtil:
+class JanusHTTPRequestUtil(HTTPRequestUtil):
     def __init__(self) -> None:
-        self.__JANUS_BASE_URL = iWebServerConfig.IWEBSERVER_JANUS_BASE_URL
-
-    def do_get(self, url, timeout=30):
-        try:
-            result = requests.get('{}{}'.format(self.__JANUS_BASE_URL, url), timeout=timeout).json()
-            Log.debug('JanusHTTPRequestUtil do_get result is {}'.format(result))
-            return result
-        except Exception as err:
-            Log.exception('JanusHTTPRequestUtil do_get err:[' + str(err) + ']')
-        return None
-
-    def do_post(self, url, data=None, timeout=30):
-        try:
-            result = requests.post('{}{}'.format(self.__JANUS_BASE_URL, url), json=data, timeout=timeout).json()
-            Log.debug('JanusHTTPRequestUtil do_post result is {}'.format(result))
-            return result
-        except Exception as err:
-            Log.exception('JanusHTTPRequestUtil do_post err:[' + str(err) + ']')
-        return None
+        super().__init__(base_url=iWebServerConfig.IWEBSERVER_JANUS_BASE_URL)
 
     def __is_successful_response(self, result):
         try:

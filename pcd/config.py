@@ -29,3 +29,6 @@ class iWebServerConfig(iWebServerBaseConfig):
 
     # janus
     IWEBSERVER_JANUS_BASE_URL = os.environ.get('IWEBSERVER_JANUS_BASE_URL')
+
+    # device
+    IWEBSERVER_DEVICE_BASE_URL = os.environ.get('IWEBSERVER_DEVICE_BASE_URL')

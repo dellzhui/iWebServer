@@ -70,7 +70,7 @@ class DeviceInfo(ModelCommonInfo):
     def to_dict(self):
         return {
             'workstationId': self.workstation_id,
-            'roomId': self.room_id,
+            'roomId': self.room.roomId if(self.room != None) else None,
             'deviceId': self.id,
             'deviceName': self.deviceName,
             'macAddress': self.macAddress,
@@ -79,3 +79,6 @@ class DeviceInfo(ModelCommonInfo):
             'createTime': self.createTime,
             'updateTime': self.updateTime
         }
+
+    def is_container(self):
+        return self.deviceType is not None and self.deviceType == 'container'

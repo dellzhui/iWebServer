@@ -8,6 +8,7 @@ from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
 from interface.utils.tools import ParasUtil, CommonTools
 from interface.views import iwebserver_logger
 from pcd.models import DeviceInfo, DEVICE_TYPE_CHOICES, WorkstationInfo, RoomInfo
+from pcd.utils.device_utils import DeviceHTTPRequestUtil
 from pcd.utils.janus_utils import JanusHTTPRequestUtil
 
 Log = logging.getLogger(__name__)
@@ -37,27 +38,43 @@ class iWebServerDeviceView(GenericAPIView):
         try:
             if (ParasUtil.is_missing_paras(request.query_params, ['workstationId', 'roomId'])):
                 return IoTErrorResponse.GenParasErrorResponse(error_msg='missing workstationId or roomId')
+            workstationId = request.query_params['workstationId']
+            roomId = request.query_params['roomId']
 
             if(ParasUtil.is_missing_paras(request.data, ['macAddress', 'deviceType'])):
                 return IoTErrorResponse.GenParasErrorResponse(error_msg='missing macAddress or deviceType')
+            macAddress = request.data['macAddress'].lower()
+            deviceType = request.data['deviceType']
+            if(deviceType not in dict(DEVICE_TYPE_CHOICES)):
+                Log.error('deviceType {} not in [{}]'.format(deviceType, dict(DEVICE_TYPE_CHOICES)))
+                return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_CREATE_ROOM_FAILED, error_msg='deviceType {} not in [{}]'.format(deviceType, dict(DEVICE_TYPE_CHOICES)))
+            if(deviceType == 'container'):
+                macAddress = '20:{}:{}:{}:11:{}'.format(CommonTools.getRamdomHex(2), CommonTools.getRamdomHex(2), CommonTools.getRamdomHex(2), CommonTools.getRamdomHex(2)).lower()
+            else:
+                if(not ParasUtil.is_valid_mac(macAddress)):
+                    Log.error('macAddress error')
+                    return IoTErrorResponse.GenParasErrorResponse(error_msg='macAddress error')
 
-            if(request.data['deviceType'] not in dict(DEVICE_TYPE_CHOICES)):
-                Log.error('deviceType {} not in [{}]'.format(request.data['deviceType'], dict(DEVICE_TYPE_CHOICES)))
-                return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_CREATE_ROOM_FAILED, error_msg='deviceType {} not in [{}]'.format(request.data['deviceType'], dict(DEVICE_TYPE_CHOICES)))
 
-            workstation = WorkstationInfo.objects.filter(id=request.query_params['workstationId'], owner_id=request.user.id).last()
+
+            workstation = WorkstationInfo.objects.filter(id=workstationId, owner_id=request.user.id).last()
             if(workstation == None):
-                return IoTErrorResponse.GenParasErrorResponse(error_msg='workstationId {} is invalid'.format(request.query_params['workstationId']))
-            room = RoomInfo.objects.filter(roomId=request.query_params['roomId'], workstation=workstation).last()
+                return IoTErrorResponse.GenParasErrorResponse(error_msg='workstationId {} is invalid'.format(workstationId))
+            room = RoomInfo.objects.filter(roomId=roomId, workstation=workstation).last()
             if (room == None):
-                return IoTErrorResponse.GenParasErrorResponse(error_msg='roomId {} is invalid'.format(request.query_params['roomId']))
+                return IoTErrorResponse.GenParasErrorResponse(error_msg='roomId {} is invalid'.format(roomId))
 
-            device = DeviceInfo.objects.filter(macAddress=request.data['macAddress'], room=room, workstation=workstation, owner_id=request.user.id).last()
+            device = DeviceInfo.objects.filter(macAddress=macAddress, room=room, workstation=workstation, owner_id=request.user.id).last()
             if(device != None):
-                Log.error('device {} already presenced'.format(request.data['macAddress']))
-                return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_ALREADY_PRESENCED, error_msg='device {} already presenced'.format(request.data['macAddress']))
+                Log.error('device {} already presenced'.format(macAddress))
+                return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_ALREADY_PRESENCED, error_msg='device {} already presenced'.format(macAddress))
 
-            device = DeviceInfo.objects.create(macAddress=request.data['macAddress'], deviceType=request.data['deviceType'], room=room, workstation=workstation, owner_id=request.user.id)
+            device = DeviceInfo(macAddress=macAddress, deviceType=deviceType, room=room, workstation=workstation, owner_id=request.user.id)
+            device_util = DeviceHTTPRequestUtil()
+            if(not device_util.regisiter(device)):
+                Log.error('regisiter request failed')
+                return IoTErrorResponse.GenResponse(error_msg='regisiter request failed')
+            device.save()
             # assign_perm('pcd.{}'.format(iWebServerConfig.IWEBSERVER_PERMISSION_DEVICE_ACCESS), User.objects.filter(id=request.user.id).last(), device)
             return IoTSuccessResponse().GenResponse(data=device.to_dict())
         except Exception as err:
