@@ -87,6 +87,13 @@ class CommonTools:
         return ''.join(random.sample(string.ascii_letters + string.digits, length))
 
     @staticmethod
+    def getRamdomHex(length):
+        result = hex(random.randint(0, 16 ** length)).replace('0x', '').lower()
+        if (len(result) < length):
+            result = '0' * (length - len(result)) + result
+        return result
+
+    @staticmethod
     def aes_decrypt(Securty, Key):
         try:
             return re.compile('[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f\n\r\t]').sub('', bytes.decode(
@@ -208,4 +215,12 @@ class ParasUtil:
         for item in target_paras:
             if(item not in paras):
                 return True
+        return False
+
+    @staticmethod
+    def is_valid_mac(mac: str):
+        try:
+            return len(re.findall(re.compile('^([0-9a-f]{2})(([/\s:][0-9a-f]{2}){5})$', re.S), mac)) > 0
+        except Exception as err:
+            Log.exception('check mac err:[' + str(err) + ']')
         return False
