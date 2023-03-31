@@ -48,10 +48,15 @@ class IoTSuccessResponse(JsonDatatypeBase):
     def __init__(self):
         JsonDatatypeBase.__init__(self)
 
-    def GenResponse(self, data=None):
+    def GenJson(self, data=None, requestId=None):
         result = {'success': True, 'data': data if (data != None) else self.to_dict()}
-        Log.info('IoTSuccessResponse gen success response is {}'.format(result))
-        return JsonResponse(data=result, status=HTTP_200_OK)
+        if(requestId != None):
+            result['requestId'] = requestId
+        Log.info('GenJson gen success response is {}'.format(result))
+        return result
+
+    def GenResponse(self, data=None, requestId=None):
+        return JsonResponse(data=self.GenJson(data=data, requestId=requestId), status=HTTP_200_OK)
 
 
 class IoTErrorResponse(JsonDatatypeBase):
@@ -62,14 +67,20 @@ class IoTErrorResponse(JsonDatatypeBase):
         self.errorMsg = error_msg
 
     @staticmethod
-    def GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_SERVER_INTERNAL_ERROR, error_msg='server internal error'):
+    def GenJson(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_SERVER_INTERNAL_ERROR, error_msg='server internal error', requestId=None):
         result = IoTErrorResponse(error_code=error_code, error_msg=error_msg).to_dict()
-        Log.info('IoTErrorResponse gen error response is {}'.format(result))
-        return JsonResponse(data=result, status=HTTP_500_INTERNAL_SERVER_ERROR)
+        if(requestId != None):
+            result['requestId'] = requestId
+        Log.info('GenJson gen error response is {}'.format(result))
+        return result
 
     @staticmethod
-    def GenParasErrorResponse(error_msg='invalid paras'):
-        return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_INVALID_PARAS, error_msg=error_msg)
+    def GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_SERVER_INTERNAL_ERROR, error_msg='server internal error', requestId=None):
+        return JsonResponse(data=IoTErrorResponse.GenJson(error_code=error_code, error_msg=error_msg, requestId=requestId), status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @staticmethod
+    def GenParasErrorResponse(error_msg='invalid paras', requestId=None):
+        return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_INVALID_PARAS, error_msg=error_msg, requestId=requestId)
 
 
 class AuthResponseInfo(IoTSuccessResponse):
