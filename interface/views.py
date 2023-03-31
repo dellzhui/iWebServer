@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
-from interface.datatype.config import iWebServerBaseConfig
+from interface.config import iWebServerBaseConfig
 from interface.datatype.datatype import IoTErrorResponse, AuthResponseInfo, IoTSuccessResponse
 from interface.models import RequestRecordInfo
 from interface.utils.UserControlUtils import UserUtils

@@ -15,6 +15,17 @@ class iWebServerBaseConfig:
     IWEBSERVER_DB_MYSQL_USER = os.environ.get('IWEBSERVER_DB_MYSQL_USER')
     IWEBSERVER_DB_MYSQL_PASSWORD = os.environ.get('IWEBSERVER_DB_MYSQL_PASSWORD')
 
+    # mqtt
+    IWEBSERVER_MQTT_SERVER_LIST = os.environ.get('IWEBSERVER_MQTT_SERVER_LIST', '')
+    IWEBSERVER_MQTT_USERNAME = os.environ.get('IWEBSERVER_MQTT_USERNAME', 'admin')
+    IWEBSERVER_MQTT_PASSWORD = os.environ.get('IWEBSERVER_MQTT_PASSWORD', '1XPv7QEjiL')
+    IWEBSERVER_MQTT_TLS_ENABLE = True if (os.environ.get('IWEBSERVER_MQTT_TLS_ENABLE', 'False') == 'True') else False
+    IWEBSERVER_MQTT_TLS_CA_PATH = os.environ.get('IWEBSERVER_MQTT_TLS_CA_PATH', '/home/yang/idms/bin/ca/ca.crt')
+    IWEBSERVER_MQTT_TLS_CERT_PATH = os.environ.get('IWEBSERVER_MQTT_TLS_CERT_PATH', '/home/yang/idms/bin/ca/client.crt')
+    IWEBSERVER_MQTT_TLS_PRIVATE_KEY_PATH = os.environ.get('IWEBSERVER_MQTT_TLS_PRIVATE_KEY_PATH', '/home/yang/idms/bin/ca/client.key')
+    IWEBSERVER_MQTT_TLS_PORT = os.environ.get('IWEBSERVER_MQTT_TLS_PORT', '')
+
+
     # jwt
     IWEBSERVER_JWT_ACCESS_TOKEN_LIFETIME_DAYS = os.environ.get('IWEBSERVER_JWT_ACCESS_TOKEN_LIFETIME_DAYS', '7')
     IWEBSERVER_JWT_ACCESS_TOKEN_LIFETIME_SECONDS = os.environ.get('IWEBSERVER_JWT_ACCESS_TOKEN_LIFETIME_SECONDS', '0')
