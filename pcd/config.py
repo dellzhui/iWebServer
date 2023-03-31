@@ -1,6 +1,6 @@
 import os
 
-from interface.datatype.config import iWebServerBaseConfig
+from interface.config import iWebServerBaseConfig
 
 
 class iWebServerConfig(iWebServerBaseConfig):
