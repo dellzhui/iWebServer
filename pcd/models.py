@@ -27,6 +27,13 @@ class WorkstationInfo(ModelCommonInfo):
     def to_dict(self):
         return {'workstationId': self.id, 'workstationName': self.name, 'createTime': self.createTime, 'updateTime': self.updateTime}
 
+    def do_delete(self):
+        for device in self.devices.all():
+            device.do_delete()
+        for room in self.rooms.all():
+            room.do_delete()
+        super().do_delete()
+
 
 class RoomInfo(ModelCommonInfo):
     class Meta:
@@ -46,6 +53,11 @@ class RoomInfo(ModelCommonInfo):
 
     def to_dict(self):
         return {'workstationId': self.workstation_id, 'roomId': self.roomId, 'roomName': self.name, 'roomJoinPin': self.roomJoinPin, 'createTime': self.createTime, 'updateTime': self.updateTime}
+
+    def do_delete(self):
+        for device in self.devices.all():
+            device.do_delete()
+        super().do_delete()
 
 
 class DeviceInfo(ModelCommonInfo):

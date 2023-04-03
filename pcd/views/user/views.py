@@ -96,9 +96,8 @@ class iWebServerUserView(GenericAPIView):
                 Log.error('can not change admin user')
                 return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_CHANGING_ADMIN_USER, error_msg='can not remove admin user')
 
-            # TODO: clear all
-            user.workstations.clear()
-            user.rooms.clear()
+            for workstation in user.workstations.all():
+                workstation.do_delete()
             user.delete()
             return IoTSuccessResponse().GenResponse()
         except Exception as err:

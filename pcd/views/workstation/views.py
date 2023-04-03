@@ -77,9 +77,7 @@ class iWebServerWorkstationView(GenericAPIView):
                 Log.error('workstation {} not presenced'.format(request.query_params['workstationId']))
                 return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_WORKSTATION_NOT_PRESENCED, error_msg='workstation not presenced')
 
-            # TODO: clear all
-            workstation.rooms.all().delete()
-            workstation.delete()
+            workstation.do_delete()
             return IoTSuccessResponse().GenResponse()
         except Exception as err:
             Log.exception('iWebServerWorkstationView delete err:[' + str(err) + ']')

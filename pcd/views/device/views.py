@@ -116,8 +116,7 @@ class iWebServerDeviceView(GenericAPIView):
                 Log.error('device {} not presenced'.format(request.query_params['deviceId']))
                 return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_NOT_PRESENCED, error_msg='device not presenced')
 
-            # TODO: clear all
-            device.delete()
+            device.do_delete()
             return IoTSuccessResponse().GenResponse()
         except Exception as err:
             Log.exception('iWebServerDeviceView delete err:[' + str(err) + ']')
