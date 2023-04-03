@@ -74,7 +74,7 @@ class IoTUtils:
             host_list = self.__get_mosquitto_host_list()
             if (host_list == None or len(host_list) == 0):
                 Log.error('mqtt server list is None')
-                return
+                return None
 
             if (paras != None):
                 paras['requestId'] = CommonTools.getRamdomString(16)
@@ -99,6 +99,36 @@ class IoTUtils:
         except Exception as err:
             Log.exception('InvokeThingService err:[' + str(err) + ']')
         return None
+
+    # https://www.wolai.com/yang_ids/6Rqoiv5Pa3GA1NZXeXieNu#nRfXCyAHaZGove28yTgVye
+    def SetHubPublishingAction(self, publishTopic, paras: dict, timeout_s=20):
+        try:
+            Log.info('paras is {}'.format(json.dumps(paras)))
+            host_list = self.__get_mosquitto_host_list()
+            if (host_list == None or len(host_list) == 0):
+                Log.error('mqtt server list is None')
+                return False
+
+            if (paras != None):
+                paras['requestId'] = CommonTools.getRamdomString(16)
+
+            mqtt_util = MqttUtils(config=MqttConfig(MqttMode=MqttConfig.MQTT_CONFIG_MODE_PUB,
+                                                    MqttUser=self.DeviceName,
+                                                    MqttPassword=self.DeviceSecret,
+                                                    MqttServerUrl=host_list[0]['host'],
+                                                    MqttServerPort=host_list[0]['port'],
+                                                    MqttKeepAliveTime_S=self.MqttKeepAliveTime_S,
+                                                    RequestId=None,
+                                                    PublishTopic=publishTopic,
+                                                    PublishPayload=json.dumps(paras),
+                                                    WaitingForPublish=False,
+                                                    WaitingForPublishTimeoutS=timeout_s))
+            Log.info('InvokeThingService:we will start mqtt task')
+            mqtt_util.start_mqtt_task_sync(handle=mqtt_util)
+            return True
+        except Exception as err:
+            Log.exception('InvokeThingService err:[' + str(err) + ']')
+        return False
 
     def PublishDeviceCommonBatchData(self, topic, content, broadcast=False):
         try:
