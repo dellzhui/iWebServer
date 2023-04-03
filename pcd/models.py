@@ -62,6 +62,7 @@ class DeviceInfo(ModelCommonInfo):
     macAddress = models.CharField(null=True, blank=True, db_index=True, max_length=256, verbose_name=_('Mac Address'))
     serialNumber = models.CharField(null=True, blank=True, db_index=True, max_length=256, verbose_name=_('Serial Number'))
     deviceType = models.CharField(null=True, blank=True, db_index=True, choices=DEVICE_TYPE_CHOICES, max_length=32, verbose_name=_('Device Type'))
+    nameSpace = models.CharField(null=True, blank=True, db_index=True, max_length=256, verbose_name=_('Name Space'))
 
     room = models.ForeignKey(RoomInfo, null=True, blank=True, related_name="devices", on_delete=models.CASCADE)
     workstation = models.ForeignKey(WorkstationInfo, null=True, blank=True, related_name="devices", on_delete=models.CASCADE)

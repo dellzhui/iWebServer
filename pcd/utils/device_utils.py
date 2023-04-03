@@ -2,6 +2,7 @@ import json
 import logging
 from interface.utils.http_util import HTTPRequestUtil
 from pcd.config import iWebServerConfig
+from pcd.datatype.datatype import DeviceRegisiterDataType, CreateContainerDataType, DestroyContainerDataType
 from pcd.models import DeviceInfo
 
 Log = logging.getLogger(__name__)
@@ -14,13 +15,13 @@ class DeviceHTTPRequestUtil(HTTPRequestUtil):
 
     def __is_successful_response(self, result):
         try:
-            return result['success']
+            return result['success'] == True
         except Exception:
             return False
 
     def regisiter(self, device: DeviceInfo):
         try:
-            result = self.do_post(url='/api/device/autoregister/', data={"DeviceType": self.device_type_info[device.deviceType], "Mac": device.macAddress, "SerialNumber": device.serialNumber})
+            result = self.do_post(url='/api/device/autoregister/', data=DeviceRegisiterDataType(DeviceType=self.device_type_info[device.deviceType], Mac=device.macAddress, SerialNumber=device.serialNumber).to_dict())
             if (result == None or not self.__is_successful_response(result)):
                 Log.error('regisiter request failed')
                 return False
@@ -32,4 +33,32 @@ class DeviceHTTPRequestUtil(HTTPRequestUtil):
             return True
         except Exception as err:
             Log.exception('regisiter err:[' + str(err) + ']')
+        return False
+
+    def create_container(self, device: DeviceInfo):
+        try:
+            data = CreateContainerDataType(roomIdStr=''.format(device.room.roomId), roomJoinPin=device.room.roomJoinPin, macAddress=device.macAddress, email=device.owner.email).to_dict()
+            Log.info('request data is {}'.format(json.dumps(data)))
+            result = self.do_post(url='/api/rms/start_self_container/', data=data)
+            if (result == None or not self.__is_successful_response(result)):
+                Log.error('create container request failed')
+                return False
+            Log.info('got result is {}'.format(json.dumps(result)))
+            device.nameSpace = result['msg']['namespace']
+            device.save()
+            return True
+        except Exception as err:
+            Log.exception('create container err:[' + str(err) + ']')
+        return False
+
+    def destroy_container(self, device: DeviceInfo):
+        try:
+            result = self.do_post(url='/api/rms/destroy_container_by_name/', data=DestroyContainerDataType(nameSpace=device.nameSpace, email=device.owner.email).to_dict())
+            if (result == None or not self.__is_successful_response(result)):
+                Log.error('destroy container request failed')
+                return False
+            Log.info('got result is {}'.format(json.dumps(result)))
+            return True
+        except Exception as err:
+            Log.exception('destroy container err:[' + str(err) + ']')
         return False

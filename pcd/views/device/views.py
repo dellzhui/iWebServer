@@ -55,8 +55,6 @@ class iWebServerDeviceView(GenericAPIView):
                     Log.error('macAddress error')
                     return IoTErrorResponse.GenParasErrorResponse(error_msg='macAddress error')
 
-
-
             workstation = WorkstationInfo.objects.filter(id=workstationId, owner_id=request.user.id).last()
             if(workstation == None):
                 return IoTErrorResponse.GenParasErrorResponse(error_msg='workstationId {} is invalid'.format(workstationId))

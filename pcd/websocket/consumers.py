@@ -5,6 +5,7 @@ import re
 from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
 from pcd.config import iWebServerConfig
 from pcd.models import DeviceInfo
+from pcd.utils.device_utils import DeviceHTTPRequestUtil
 from websocket.consumers import iWebServerConsumer
 
 Log = logging.getLogger(__name__)
@@ -14,8 +15,11 @@ class PCDConsumer(iWebServerConsumer):
     def __init__(self):
         super().__init__()
         self.__handlers = {
-            'container_status': self.__container_status
+            'container_status': self.__container_status,
+            'container_create': self.__container_create,
+            'container_destroy': self.__container_destroy
         }
+        self.__device_util = DeviceHTTPRequestUtil()
 
     def __container_status(self, requestId, paras):
         try:
@@ -30,8 +34,39 @@ class PCDConsumer(iWebServerConsumer):
                                                        timeout_s=10)
             if(result != None):
                 return IoTSuccessResponse().GenJson(data={'deviceId': device.id, 'deviceStatus': 'ONLINE', 'publisherId': result['publisherId'], 'privateId': result['privateId'], 'roomId': result['roomId'], 'roomJoinPin': result['roomJoinPin']}, requestId=requestId)
+            return IoTSuccessResponse().GenJson(data={'deviceId': device.id, 'deviceStatus': 'OFFLINE', 'publisherId': None, 'privateId': None, 'roomId': None, 'roomJoinPin': None}, requestId=requestId)
         except Exception as err:
             Log.exception('__container_status err:[' + str(err) + ']')
+        return IoTErrorResponse.GenJson(requestId=requestId)
+
+    def __container_create(self, requestId, paras):
+        try:
+            device = DeviceInfo.objects.filter(id=paras['deviceId'], owner_id=self._user.id).last()
+            if(device == None):
+                return IoTErrorResponse.GenJson(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_NOT_PRESENCED, error_msg='device not presenced', requestId=requestId)
+            if (not device.is_container()):
+                return IoTErrorResponse.GenJson(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_NOT_PRESENCED, error_msg='device is not container', requestId=requestId)
+            result = self.__device_util.create_container(device)
+            if(result == True):
+                return IoTSuccessResponse().GenJson(requestId=requestId)
+            return IoTErrorResponse.GenJson(error_msg='create container failed', requestId=requestId)
+        except Exception as err:
+            Log.exception('__container_create err:[' + str(err) + ']')
+        return IoTErrorResponse.GenJson(requestId=requestId)
+
+    def __container_destroy(self, requestId, paras):
+        try:
+            device = DeviceInfo.objects.filter(id=paras['deviceId'], owner_id=self._user.id).last()
+            if (device == None):
+                return IoTErrorResponse.GenJson(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_NOT_PRESENCED, error_msg='device not presenced', requestId=requestId)
+            if (not device.is_container()):
+                return IoTErrorResponse.GenJson(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_NOT_PRESENCED, error_msg='device is not container', requestId=requestId)
+            result = self.__device_util.destroy_container(device)
+            if (result == True):
+                return IoTSuccessResponse().GenJson(requestId=requestId)
+            return IoTErrorResponse.GenJson(error_msg='destroy container failed', requestId=requestId)
+        except Exception as err:
+            Log.exception('__container_destroy err:[' + str(err) + ']')
         return IoTErrorResponse.GenJson(requestId=requestId)
 
     @property

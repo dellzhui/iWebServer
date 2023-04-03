@@ -101,6 +101,7 @@ class iWebServerRoomView(GenericAPIView):
             janus_util = JanusHTTPRequestUtil()
             if(janus_util.destroy_video_room(room.roomId, room.roomJoinPin)):
                 # TODO: clear all
+                room.devices.all().delete()
                 room.delete()
                 return IoTSuccessResponse().GenResponse()
             return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DESTROY_ROOM_FAILED, error_msg='destroy janus room failed')
