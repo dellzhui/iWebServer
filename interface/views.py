@@ -15,8 +15,20 @@ from interface.utils.tools import ParasUtil
 
 Log = logging.getLogger(__name__)
 
+def iwebserver_logger_f(func):
+    @wraps(func)
+    def wrapped_function(request):
+        response = func(request)
+        if(iWebServerBaseConfig.IWEBSERVER_REQUEST_RECORD_ENABLE):
+            request_record = RequestRecordInfo()
+            request_record.from_request_and_response(request=request, response=response)
+            Log.debug(request_record.to_json())
+            request_record.save()
+        return response
+    return wrapped_function
 
-def iwebserver_logger(func):
+
+def iwebserver_logger_c(func):
     @wraps(func)
     def wrapped_function(o, request):
         response = func(o, request)

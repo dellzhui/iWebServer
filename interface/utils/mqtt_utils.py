@@ -54,8 +54,11 @@ class MqttConfig:
                 return False
 
         if (self.MqttMode in [MqttConfig.MQTT_CONFIG_MODE_PUB]):
-            if(self.__is_paras_empty([self.RequestId, self.PublishTopic, self.PublishPayload, self.WaitingForPublish])):
+            if(self.__is_paras_empty([self.PublishTopic, self.PublishPayload, self.WaitingForPublish])):
                 return False
+            if(self.WaitingForPublish == True):
+                if(self.__is_paras_empty(self.RequestId)):
+                    return False
         return True
 
 
@@ -140,11 +143,12 @@ class MqttUtils:
             elif(self.mqttConfig.MqttMode == MqttConfig.MQTT_CONFIG_MODE_PUB):
                 try:
                     response = json.loads(payload)
-                    if ('RequestId' not in response):
-                        return
-                    if (self.mqttConfig.RequestId == None or self.mqttConfig.RequestId != response['RequestId']):
-                        Log.info('received another request_id')
-                        return
+                    if(self.mqttConfig.RequestId != None):
+                        if ('RequestId' not in response):
+                            return
+                        if (self.mqttConfig.RequestId == None or self.mqttConfig.RequestId != response['RequestId']):
+                            Log.info('received another request_id')
+                            return
                 except Exception as err:
                     Log.exception('err:[' + str(err) + ']')
                     return

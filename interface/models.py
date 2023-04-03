@@ -5,6 +5,8 @@ from json import JSONEncoder
 from django.db import models
 from django.db.models.base import ModelState
 from django.utils.translation import gettext as _
+from rest_framework.request import Request
+
 from interface.config import iWebServerBaseConfig
 
 Log = logging.getLogger(__name__)
@@ -97,16 +99,23 @@ class RequestRecordInfo(ModelCommonInfo):
     responseContent = models.TextField(null=True, blank=True, verbose_name=_('Response Content'))
 
     def from_request_and_response(self, request, response):
-        if (request != None):
-            self.requestUserId = request.user.id
-            self.requestUsername = request.user.username
-            self.requestUrl = '{}{}'.format(request.META["PATH_INFO"], f'?{request.META["QUERY_STRING"]}' if (request.META["QUERY_STRING"] != '') else '')
-            self.requestMethod = request.method
-            self.requestData = json.dumps(request.data) if (isinstance(request.data, dict)) else str(request.data)
+        try:
+            if (request != None):
+                self.requestUserId = request.user.id
+                self.requestUsername = request.user.username
+                self.requestUrl = '{}{}'.format(request.META["PATH_INFO"], f'?{request.META["QUERY_STRING"]}' if (request.META["QUERY_STRING"] != '') else '')
+                self.requestMethod = request.method
+                if(isinstance(request, Request)):
+                    self.requestData = json.dumps(request.data) if (isinstance(request.data, dict)) else str(request.data)
+                else:
+                    self.requestData = request.body.decode('utf-8') if (isinstance(request.body, bytes)) else str(request.body)
 
-        if (response != None):
-            self.responseCode = response.status_code
-            self.responseContent = response.content.decode('utf-8') if (isinstance(response.content, bytes)) else str(response.content)
+            if (response != None):
+                self.responseCode = response.status_code
+                self.responseContent = response.content.decode('utf-8') if (
+                    isinstance(response.content, bytes)) else str(response.content)
+        except Exception as err:
+            Log.exception('from_request_and_response err:[' + str(err) + ']')
 
     def __str__(self):
         return '{} {} {}'.format(self.createTime, self.requestUserId, self.requestUrl)
