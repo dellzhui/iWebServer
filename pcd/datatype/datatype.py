@@ -1,4 +1,8 @@
-from interface.datatype.datatype import JsonDatatypeBase
+import json
+import logging
+
+from interface.datatype.datatype import JsonDatatypeBase, IoTBase
+from pcd.models import DeviceInfo
 
 
 class DeviceRegisiterDataType(JsonDatatypeBase):
@@ -38,3 +42,90 @@ class DestroyContainerDataType(JsonDatatypeBase):
 
     def __str__(self):
         return self.to_json()
+
+
+# https://www.wolai.com/yang_ids/6Rqoiv5Pa3GA1NZXeXieNu#7ARJWCRRd7gQAAgujrQygX
+class DeviceWebRtcConnectionDataType(IoTBase):
+    def __init__(self, info=None):
+        self.requestId = None
+        self.roomId = None
+        self.roomJoinPin = None
+        self.publisherId = None
+        self.privateId = None
+        self.localMacAddress = None
+
+        IoTBase.__init__(self, info=info)
+
+    def __str__(self):
+        return self.to_json()
+
+
+# https://www.wolai.com/yang_ids/e5UPobHGfhX85QEiW4fkQa#5RQCMakV2sMuhQBpbRRkx4
+class WebsocketDeviceStatusDataType(IoTBase):
+    def __init__(self, info=None, deviceStatus=None):
+        self.deviceId: int | None = None
+        self.deviceStatus: str | None = deviceStatus
+        self.publisherId: int | None = None
+        self.privateId: int | None = None
+        self.roomId: int | None = None
+        self.roomJoinPin: str | None = None
+        self.turnServer: str | None = None
+        self.turnUserName: str | None = None
+        self.turnCredential: str | None = None
+        self.rtcbotConnectUrl: str | None = None
+        self.noVNCConnectUrl: str | None = None
+
+        IoTBase.__init__(self, info=info)
+
+    def __str__(self):
+        return self.to_json()
+
+    # https://www.wolai.com/yang_ids/6Rqoiv5Pa3GA1NZXeXieNu#7ARJWCRRd7gQAAgujrQygX
+    def update_from_request(self, result: dict):
+        try:
+            self.publisherId = result['publisherId']
+            self.roomId = result['roomId']
+            self.roomJoinPin = result['roomJoinPin']
+            self.privateId = result['privateId']
+        except Exception as err:
+            logging.exception('update_from_request err:[' + str(err) + ']')
+
+    '''
+    {
+        "RequestId": "KlDLdSudRpTV",
+        "RmsResult": {
+            "code": 0,
+            "extras": {
+                "publisherType": "webrtc",
+                "webrtc": {
+                    "GroupId": "0000000001_0242ac110001",
+                    "UserId": "0000000001",
+                    "local_mac": "20:a1:da:23:11:39",
+                    "privateId": 1184013529,
+                    "publisherId": 8979568362539330,
+                    "roomId": 2013,
+                    "roomJoinPin": "K8FtAOikRVuSLd2f",
+                    "stb_mac": "00:00:00:00:00:00"
+                }
+            },
+            "msg": "OK"
+        }
+    }
+    '''
+    def update_from_ready_event(self, payload: str):
+        try:
+            info = json.loads(payload)['RmsResult']['extras']['webrtc']
+            self.publisherId = info['publisherId']
+            self.roomId = info['roomId']
+            self.roomJoinPin = info['roomJoinPin']
+            self.privateId = info['privateId']
+        except Exception as err:
+            logging.exception('update_from_request err:[' + str(err) + ']')
+
+    def update_from_device(self, device: DeviceInfo):
+        self.deviceId = device.id
+        self.turnServer = device.turnServer
+        self.turnUserName = device.turnUserName
+        self.turnCredential = device.turnCredential
+        self.rtcbotConnectUrl = device.rtcbotConnectUrl
+        self.noVNCConnectUrl = device.noVNCConnectUrl

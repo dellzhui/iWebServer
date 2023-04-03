@@ -6,7 +6,7 @@ from rest_framework.generics import GenericAPIView
 from pcd.config import iWebServerConfig
 from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
 from interface.utils.tools import ParasUtil, CommonTools
-from interface.views import iwebserver_logger
+from interface.views import iwebserver_logger_c
 from pcd.models import RoomInfo
 from pcd.utils.janus_utils import JanusHTTPRequestUtil
 
@@ -14,7 +14,7 @@ Log = logging.getLogger(__name__)
 
 
 class iWebServerRoomView(GenericAPIView):
-    @iwebserver_logger
+    @iwebserver_logger_c
     def get(self, request):
         try:
             if (ParasUtil.is_missing_paras(request.query_params, ['workstationId'])):
@@ -28,7 +28,7 @@ class iWebServerRoomView(GenericAPIView):
             Log.exception('iWebServerRoomView get err:[' + str(err) + ']')
         return IoTErrorResponse.GenResponse()
 
-    @iwebserver_logger
+    @iwebserver_logger_c
     def post(self, request):
         try:
             if (ParasUtil.is_missing_paras(request.query_params, ['workstationId'])):
@@ -57,7 +57,7 @@ class iWebServerRoomView(GenericAPIView):
             Log.exception('iWebServerRoomView post err:[' + str(err) + ']')
         return IoTErrorResponse.GenResponse()
 
-    @iwebserver_logger
+    @iwebserver_logger_c
     def put(self, request):
         try:
             if (ParasUtil.is_missing_paras(request.query_params, ['workstationId'])):
@@ -84,7 +84,7 @@ class iWebServerRoomView(GenericAPIView):
             Log.exception('iWebServerRoomView put err:[' + str(err) + ']')
         return IoTErrorResponse.GenResponse()
 
-    @iwebserver_logger
+    @iwebserver_logger_c
     def delete(self, request):
         try:
             if (ParasUtil.is_missing_paras(request.query_params, ['workstationId'])):

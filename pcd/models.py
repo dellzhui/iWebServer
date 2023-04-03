@@ -1,8 +1,11 @@
+import logging
 from django.contrib.auth.models import User
 from django.db import models
 from pcd.config import iWebServerConfig
 from interface.models import ModelCommonInfo
 from django.utils.translation import gettext as _
+
+Log = logging.getLogger(__name__)
 
 
 DEVICE_TYPE_CHOICES = (
@@ -76,11 +79,18 @@ class DeviceInfo(ModelCommonInfo):
 
     productKey = models.CharField(null=True, blank=True, db_index=True, max_length=256, verbose_name=_('Product Key'))
     deviceName = models.CharField(null=True, blank=True, db_index=True, max_length=256, verbose_name=_('Device Name'))
-    deviceSecret = models.CharField(null=True, blank=True, db_index=True, max_length=256, verbose_name=_('Device Secret'))
+    deviceSecret = models.CharField(null=True, blank=True, max_length=256, verbose_name=_('Device Secret'))
     macAddress = models.CharField(null=True, blank=True, db_index=True, max_length=256, verbose_name=_('Mac Address'))
     serialNumber = models.CharField(null=True, blank=True, db_index=True, max_length=256, verbose_name=_('Serial Number'))
     deviceType = models.CharField(null=True, blank=True, db_index=True, choices=DEVICE_TYPE_CHOICES, max_length=32, verbose_name=_('Device Type'))
     nameSpace = models.CharField(null=True, blank=True, db_index=True, max_length=256, verbose_name=_('Name Space'))
+
+    # ICE
+    turnServer = models.CharField(null=True, blank=True, max_length=256, verbose_name=_('TURN Server'))
+    turnUserName = models.CharField(null=True, blank=True, max_length=256, verbose_name=_('TURN User Name'))
+    turnCredential = models.CharField(null=True, blank=True, max_length=256, verbose_name=_('Turn Credential'))
+    rtcbotConnectUrl = models.CharField(null=True, blank=True, max_length=1024, verbose_name=_('RTCBot Url'))
+    noVNCConnectUrl = models.CharField(null=True, blank=True, max_length=1024, verbose_name=_('noVNC Url'))
 
     room = models.ForeignKey(RoomInfo, null=True, blank=True, related_name="devices", on_delete=models.CASCADE)
     workstation = models.ForeignKey(WorkstationInfo, null=True, blank=True, related_name="devices", on_delete=models.CASCADE)
@@ -104,3 +114,34 @@ class DeviceInfo(ModelCommonInfo):
 
     def is_container(self):
         return self.deviceType is not None and self.deviceType == 'container'
+
+    def is_hub(self):
+        return self.deviceType is not None and self.deviceType == 'hub'
+
+    def is_stb(self):
+        return self.deviceType is not None and self.deviceType == 'stb'
+
+    def get_bound_devices(self):
+        try:
+            result = {}
+            hubs = self.room.devices.filter(deviceType='hub')
+            if(hubs.count() > 1):
+                Log.error('more than one hubs')
+                return None
+            result['hub'] = hubs.last()
+
+            containers = self.room.devices.filter(deviceType='container')
+            if (containers.count() > 1):
+                Log.error('more than one containers')
+                return None
+            result['container'] = containers.last()
+
+            stbs = self.room.devices.filter(deviceType='stb')
+            if (stbs.count() > 1):
+                Log.error('more than one stbs')
+                return None
+            result['stb'] = stbs.last()
+            return result
+        except Exception as err:
+            Log.exception('get_bound_devices err:[' + str(err) + ']')
+        return None

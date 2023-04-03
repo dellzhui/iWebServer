@@ -4,13 +4,13 @@ from rest_framework.generics import GenericAPIView
 from pcd.config import iWebServerConfig
 from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
 from interface.utils.tools import ParasUtil
-from interface.views import requires_admin_access, iwebserver_logger
+from interface.views import requires_admin_access, iwebserver_logger_c
 
 Log = logging.getLogger(__name__)
 
 
 class iWebServerUserView(GenericAPIView):
-    @iwebserver_logger
+    @iwebserver_logger_c
     @requires_admin_access
     def get(self, request):
         try:
@@ -24,7 +24,7 @@ class iWebServerUserView(GenericAPIView):
             Log.exception('iWebServerUserView get err:[' + str(err) + ']')
         return IoTErrorResponse.GenResponse()
 
-    @iwebserver_logger
+    @iwebserver_logger_c
     @requires_admin_access
     def post(self, request):
         try:
@@ -51,7 +51,7 @@ class iWebServerUserView(GenericAPIView):
             Log.exception('iWebServerUserView post err:[' + str(err) + ']')
         return IoTErrorResponse.GenResponse()
 
-    @iwebserver_logger
+    @iwebserver_logger_c
     @requires_admin_access
     def put(self, request):
         try:
@@ -80,7 +80,7 @@ class iWebServerUserView(GenericAPIView):
             Log.exception('iWebServerUserView put err:[' + str(err) + ']')
         return IoTErrorResponse.GenResponse()
 
-    @iwebserver_logger
+    @iwebserver_logger_c
     @requires_admin_access
     def delete(self, request):
         try:

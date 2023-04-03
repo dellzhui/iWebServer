@@ -6,14 +6,14 @@ from rest_framework.generics import GenericAPIView
 from pcd.config import iWebServerConfig
 from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
 from interface.utils.tools import ParasUtil
-from interface.views import iwebserver_logger
+from interface.views import iwebserver_logger_c
 from pcd.models import WorkstationInfo
 
 Log = logging.getLogger(__name__)
 
 
 class iWebServerWorkstationView(GenericAPIView):
-    @iwebserver_logger
+    @iwebserver_logger_c
     def get(self, request):
         try:
             workstations = WorkstationInfo.objects.filter(owner_id=request.user.id)
@@ -24,7 +24,7 @@ class iWebServerWorkstationView(GenericAPIView):
             Log.exception('iWebServerWorkstationView get err:[' + str(err) + ']')
         return IoTErrorResponse.GenResponse()
 
-    @iwebserver_logger
+    @iwebserver_logger_c
     def post(self, request):
         try:
             if(ParasUtil.is_missing_paras(request.data, ['workstationName'])):
@@ -42,7 +42,7 @@ class iWebServerWorkstationView(GenericAPIView):
             Log.exception('iWebServerWorkstationView post err:[' + str(err) + ']')
         return IoTErrorResponse.GenResponse()
 
-    @iwebserver_logger
+    @iwebserver_logger_c
     def put(self, request):
         try:
             if (ParasUtil.is_missing_paras(request.query_params, ['workstationId'])):
@@ -66,7 +66,7 @@ class iWebServerWorkstationView(GenericAPIView):
             Log.exception('iWebServerWorkstationView put err:[' + str(err) + ']')
         return IoTErrorResponse.GenResponse()
 
-    @iwebserver_logger
+    @iwebserver_logger_c
     def delete(self, request):
         try:
             if (ParasUtil.is_missing_paras(request.query_params, ['workstationId'])):

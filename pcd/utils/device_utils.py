@@ -44,7 +44,13 @@ class DeviceHTTPRequestUtil(HTTPRequestUtil):
                 Log.error('create container request failed')
                 return False
             Log.info('got result is {}'.format(json.dumps(result)))
+            # https://www.wolai.com/yang_ids/e5UPobHGfhX85QEiW4fkQa#4vEHb1Z9mR5QN5fJ5NPSLn
             device.nameSpace = result['msg']['namespace']
+            device.turnServer = result['msg']['turnServer']
+            device.turnUserName = result['msg']['turnUserName']
+            device.turnCredential = result['msg']['turnCredential']
+            device.rtcbotConnectUrl = result['msg']['rtcbotConnectUrl']
+            device.noVNCConnectUrl = result['msg']['noVNCConnectUrl']
             device.save()
             return True
         except Exception as err:
