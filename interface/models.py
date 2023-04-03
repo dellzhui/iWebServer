@@ -1,10 +1,13 @@
 import datetime
 import json
+import logging
 from json import JSONEncoder
 from django.db import models
 from django.db.models.base import ModelState
 from django.utils.translation import gettext as _
 from interface.config import iWebServerBaseConfig
+
+Log = logging.getLogger(__name__)
 
 
 class IdmsModelEncoder(JSONEncoder):
@@ -53,6 +56,13 @@ class ModelCommonInfo(models.Model):
                     setattr(self, key, ModelCommonInfo(value) if isinstance(value, dict) else value)
         except Exception:
             return
+
+    def do_delete(self):
+        try:
+            Log.info('we will delete {}'.format(self.to_json()))
+            self.delete()
+        except Exception as err:
+            Log.exception('delete error:[' + str(err) + ']')
 
 
 class UserControl(ModelCommonInfo):
