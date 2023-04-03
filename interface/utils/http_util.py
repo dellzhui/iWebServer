@@ -1,3 +1,4 @@
+import json
 import logging
 import requests
 
@@ -19,8 +20,11 @@ class HTTPRequestUtil:
 
     def do_post(self, url, data=None, timeout=30):
         try:
-            result1 = requests.post('{}{}'.format(self._BASE_URL, url), json=data, timeout=timeout)
-            result = result1.json()
+            result_ori = requests.post('{}{}'.format(self._BASE_URL, url), json=data, timeout=timeout)
+            try:
+                result = result_ori.json()
+            except Exception:
+                result = json.loads(result_ori.text)
             Log.debug('HTTPRequestUtil do_post result is {}'.format(result))
             return result
         except Exception as err:
