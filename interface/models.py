@@ -84,6 +84,10 @@ class UserControl(ModelCommonInfo):
 
 
 class RequestRecordInfo(ModelCommonInfo):
+    class Meta:
+        verbose_name = _('Request Record')
+        verbose_name_plural = _('Request Record')
+
     requestUserId = models.BigIntegerField(null=True, blank=True, db_index=True, verbose_name=_('Request UserId'))
     requestUsername = models.CharField(null=True, blank=True, max_length=256, verbose_name=_('Request UserName'))
     requestUrl = models.CharField(null=True, blank=True, max_length=2048, verbose_name=_('Request Url'))
@@ -103,3 +107,6 @@ class RequestRecordInfo(ModelCommonInfo):
         if (response != None):
             self.responseCode = response.status_code
             self.responseContent = response.content.decode('utf-8') if (isinstance(response.content, bytes)) else str(response.content)
+
+    def __str__(self):
+        return '{} {} {}'.format(self.createTime, self.requestUserId, self.requestUrl)
