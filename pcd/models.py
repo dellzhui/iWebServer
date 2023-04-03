@@ -6,16 +6,16 @@ from django.utils.translation import gettext as _
 
 
 DEVICE_TYPE_CHOICES = (
-    ('hub', _('HUB Device')),
+    ('hub', _('HUB')),
     ('container', _('Container')),
-    ('stb', _('STB Device'))
+    ('stb', _('STB'))
 )
 
 
 class WorkstationInfo(ModelCommonInfo):
     class Meta:
-        verbose_name = _('WorkstationInfo')
-        verbose_name_plural = _('WorkstationInfo')
+        verbose_name = _('Workstation Info')
+        verbose_name_plural = _('Workstation Info')
         permissions = (
             (iWebServerConfig.IWEBSERVER_PERMISSION_WORKSTATION_ACCESS, 'can access workstation'),
         )
@@ -23,6 +23,9 @@ class WorkstationInfo(ModelCommonInfo):
     name = models.CharField(null=True, blank=True, db_index=True, max_length=256, verbose_name=_('Workstation Name'))
 
     owner = models.ForeignKey(User, null=True, blank=True, related_name="workstations", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
     def to_dict(self):
         return {'workstationId': self.id, 'workstationName': self.name, 'createTime': self.createTime, 'updateTime': self.updateTime}
@@ -37,8 +40,8 @@ class WorkstationInfo(ModelCommonInfo):
 
 class RoomInfo(ModelCommonInfo):
     class Meta:
-        verbose_name = _('RoomInfo')
-        verbose_name_plural = _('RoomInfo')
+        verbose_name = _('Room Info')
+        verbose_name_plural = _('Room Info')
         permissions = (
             (iWebServerConfig.IWEBSERVER_PERMISSION_ROOM_ACCESS, 'can access room'),
         )
@@ -51,6 +54,9 @@ class RoomInfo(ModelCommonInfo):
     workstation = models.ForeignKey(WorkstationInfo, null=True, blank=True, related_name="rooms", on_delete=models.CASCADE)
     owner = models.ForeignKey(User, null=True, blank=True, related_name="rooms", on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
     def to_dict(self):
         return {'workstationId': self.workstation_id, 'roomId': self.roomId, 'roomName': self.name, 'roomJoinPin': self.roomJoinPin, 'createTime': self.createTime, 'updateTime': self.updateTime}
 
@@ -62,8 +68,8 @@ class RoomInfo(ModelCommonInfo):
 
 class DeviceInfo(ModelCommonInfo):
     class Meta:
-        verbose_name = _('DeviceInfo')
-        verbose_name_plural = _('DeviceInfo')
+        verbose_name = _('Device Info')
+        verbose_name_plural = _('Device Info')
         permissions = (
             (iWebServerConfig.IWEBSERVER_PERMISSION_DEVICE_ACCESS, 'can access device'),
         )
@@ -79,6 +85,9 @@ class DeviceInfo(ModelCommonInfo):
     room = models.ForeignKey(RoomInfo, null=True, blank=True, related_name="devices", on_delete=models.CASCADE)
     workstation = models.ForeignKey(WorkstationInfo, null=True, blank=True, related_name="devices", on_delete=models.CASCADE)
     owner = models.ForeignKey(User, null=True, blank=True, related_name="devices", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.macAddress
 
     def to_dict(self):
         return {
