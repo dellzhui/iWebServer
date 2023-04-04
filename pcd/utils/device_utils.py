@@ -2,14 +2,14 @@ import json
 import logging
 from interface.utils.http_util import HTTPRequestUtil
 from pcd.config import iWebServerConfig
-from pcd.datatype.datatype import DeviceRegisiterDataType, CreateContainerDataType, DestroyContainerDataType
+from pcd.datatype.datatype import CreateContainerDataType, DestroyContainerDataType
 from pcd.models import DeviceInfo
 
 Log = logging.getLogger(__name__)
 
 
 class DeviceHTTPRequestUtil(HTTPRequestUtil):
-    def __init__(self) -> None:
+    def __init__(self):
         super().__init__(base_url=iWebServerConfig.IWEBSERVER_DEVICE_BASE_URL)
         self.device_type_info = {'hub': 'HUB', 'container': 'Container', 'stb': 'STB'}
 
@@ -21,7 +21,9 @@ class DeviceHTTPRequestUtil(HTTPRequestUtil):
 
     def regisiter(self, device: DeviceInfo):
         try:
-            result = self.do_post(url='/api/device/autoregister/', data=DeviceRegisiterDataType(DeviceType=self.device_type_info[device.deviceType], Mac=device.macAddress, SerialNumber=device.serialNumber).to_dict())
+            data = device.to_regisitr_request_data()
+            Log.info('got registe request data is {}'.format(data))
+            result = self.do_post(url='/api/device/autoregister/', data=data)
             if (result == None or not self.__is_successful_response(result)):
                 Log.error('regisiter request failed')
                 return False

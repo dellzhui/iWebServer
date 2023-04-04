@@ -1,18 +1,10 @@
 import json
 import logging
-
 from interface.datatype.datatype import JsonDatatypeBase, IoTBase
 from pcd.models import DeviceInfo
 
+Log = logging.getLogger(__name__)
 
-class DeviceRegisiterDataType(JsonDatatypeBase):
-    def __init__(self, DeviceType, Mac, SerialNumber=None):
-        self.DeviceType = DeviceType
-        self.Mac = Mac
-        self.SerialNumber = SerialNumber
-
-    def __str__(self):
-        return self.to_json()
 
 # https://www.wolai.com/yang_ids/e5UPobHGfhX85QEiW4fkQa#iZqoAUDZjokXtzfkaGiYqg
 class CreateContainerDataType(JsonDatatypeBase):
@@ -59,6 +51,27 @@ class DeviceWebRtcConnectionDataType(IoTBase):
     def __str__(self):
         return self.to_json()
 
+    @staticmethod
+    def from_ready_event(payload):
+        try:
+            if(isinstance(payload, str)):
+                info = json.loads(payload)['RmsResult']['extras']['webrtc']
+            elif(isinstance(payload, dict)):
+                info = payload['RmsResult']['extras']['webrtc']
+            else:
+                return None
+            device_webrtc_connection_info = DeviceWebRtcConnectionDataType()
+            device_webrtc_connection_info.publisherId = info['publisherId']
+            device_webrtc_connection_info.roomId = info['roomId']
+            device_webrtc_connection_info.roomJoinPin = info['roomJoinPin']
+            device_webrtc_connection_info.privateId = info['privateId']
+            if('local_mac' in info):
+                device_webrtc_connection_info.localMacAddress = info['local_mac']
+            return device_webrtc_connection_info
+        except Exception as err:
+            Log.exception('from_ready_event err:[' + str(err) + ']')
+        return None
+
 
 # https://www.wolai.com/yang_ids/e5UPobHGfhX85QEiW4fkQa#5RQCMakV2sMuhQBpbRRkx4
 class WebsocketDeviceStatusDataType(IoTBase):
@@ -79,6 +92,39 @@ class WebsocketDeviceStatusDataType(IoTBase):
 
     def __str__(self):
         return self.to_json()
+
+    '''
+        {
+            "RequestId": "KlDLdSudRpTV",
+            "RmsResult": {
+                "code": 0,
+                "extras": {
+                    "publisherType": "webrtc",
+                    "webrtc": {
+                        "GroupId": "0000000001_0242ac110001",
+                        "UserId": "0000000001",
+                        "local_mac": "20:a1:da:23:11:39",
+                        "privateId": 1184013529,
+                        "publisherId": 8979568362539330,
+                        "roomId": 2013,
+                        "roomJoinPin": "K8FtAOikRVuSLd2f",
+                        "stb_mac": "00:00:00:00:00:00"
+                    }
+                },
+                "msg": "OK"
+            }
+        }
+        '''
+
+    def update_from_ready_event(self, payload: str):
+        try:
+            info = json.loads(payload)['RmsResult']['extras']['webrtc']
+            self.publisherId = info['publisherId']
+            self.roomId = info['roomId']
+            self.roomJoinPin = info['roomJoinPin']
+            self.privateId = info['privateId']
+        except Exception as err:
+            logging.exception('update_from_request err:[' + str(err) + ']')
 
     # https://www.wolai.com/yang_ids/6Rqoiv5Pa3GA1NZXeXieNu#7ARJWCRRd7gQAAgujrQygX
     def update_from_request(self, result: dict):

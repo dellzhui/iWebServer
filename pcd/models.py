@@ -145,3 +145,17 @@ class DeviceInfo(ModelCommonInfo):
         except Exception as err:
             Log.exception('get_bound_devices err:[' + str(err) + ']')
         return None
+
+    def to_regisitr_request_data(self):
+        device_type_info = {'hub': 'HUB', 'container': 'Container', 'stb': 'STB'}
+        try:
+            return {
+                'DeviceType': device_type_info[self.deviceType],
+                'Mac': self.macAddress,
+                'SerialNumber': self.serialNumber,
+                'roomId': self.room.roomId,
+                'roomJoinPin': self.room.roomJoinPin
+            }
+        except Exception as err:
+            Log.exception('to_regisitr_request_data err:[' + str(err) + ']')
+        return None

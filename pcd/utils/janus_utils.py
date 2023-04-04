@@ -7,7 +7,7 @@ Log = logging.getLogger(__name__)
 
 
 class JanusHTTPRequestUtil(HTTPRequestUtil):
-    def __init__(self) -> None:
+    def __init__(self):
         super().__init__(base_url=iWebServerConfig.IWEBSERVER_JANUS_BASE_URL)
 
     def __is_successful_response(self, result):

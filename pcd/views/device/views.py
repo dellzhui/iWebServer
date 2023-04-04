@@ -44,16 +44,24 @@ class iWebServerDeviceView(GenericAPIView):
             if(ParasUtil.is_missing_paras(request.data, ['macAddress', 'deviceType'])):
                 return IoTErrorResponse.GenParasErrorResponse(error_msg='missing macAddress or deviceType')
             macAddress = request.data['macAddress'].lower()
+
             deviceType = request.data['deviceType']
             if(deviceType not in dict(DEVICE_TYPE_CHOICES)):
                 Log.error('deviceType {} not in [{}]'.format(deviceType, dict(DEVICE_TYPE_CHOICES)))
                 return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_CREATE_ROOM_FAILED, error_msg='deviceType {} not in [{}]'.format(deviceType, dict(DEVICE_TYPE_CHOICES)))
+
+
+            # check macAddress
             if(deviceType == 'container'):
                 macAddress = '20:{}:{}:{}:11:{}'.format(CommonTools.getRamdomHex(2), CommonTools.getRamdomHex(2), CommonTools.getRamdomHex(2), CommonTools.getRamdomHex(2)).lower()
             else:
                 if(not ParasUtil.is_valid_mac(macAddress)):
                     Log.error('macAddress error')
                     return IoTErrorResponse.GenParasErrorResponse(error_msg='macAddress error')
+                # TODO: only one mac is temporarily supported
+                if (DeviceInfo.objects.filter(macAddress=macAddress).last() != None):
+                    Log.error('device {} already presenced'.format(macAddress))
+                    return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_ALREADY_PRESENCED, error_msg='device {} already presenced'.format(macAddress))
 
             workstation = WorkstationInfo.objects.filter(id=workstationId, owner_id=request.user.id).last()
             if(workstation == None):
@@ -61,6 +69,12 @@ class iWebServerDeviceView(GenericAPIView):
             room = RoomInfo.objects.filter(roomId=roomId, workstation=workstation).last()
             if (room == None):
                 return IoTErrorResponse.GenParasErrorResponse(error_msg='roomId {} is invalid'.format(roomId))
+
+            # check deviceType
+            # TODO: only one type is temporarily supported
+            if (DeviceInfo.objects.filter(deviceType=deviceType, room=room, workstation=workstation, owner_id=request.user.id).last() != None):
+                Log.error('deviceType {} already presenced'.format(deviceType))
+                return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_ALREADY_PRESENCED, error_msg='deviceType {} already presenced'.format(deviceType))
 
             device = DeviceInfo.objects.filter(macAddress=macAddress, room=room, workstation=workstation, owner_id=request.user.id).last()
             if(device != None):
@@ -78,32 +92,6 @@ class iWebServerDeviceView(GenericAPIView):
         except Exception as err:
             Log.exception('iWebServerDeviceView post err:[' + str(err) + ']')
         return IoTErrorResponse.GenResponse()
-
-    # @iwebserver_logger_c
-    # def put(self, request):
-    #     try:
-    #         if (ParasUtil.is_missing_paras(request.query_params, ['workstationId'])):
-    #             return IoTErrorResponse.GenParasErrorResponse(error_msg='missing workstationId')
-    #         if (ParasUtil.is_missing_paras(request.query_params, ['roomId'])):
-    #             return IoTErrorResponse.GenParasErrorResponse(error_msg='missing roomId')
-    #         if (ParasUtil.is_missing_paras(request.data, ['roomName'])):
-    #             return IoTErrorResponse.GenParasErrorResponse(error_msg='missing roomName')
-    #
-    #         if (request.data['roomName'] == ''):
-    #             Log.error('invalid roomName')
-    #             return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_PASSWORD_NOT_MATCH, error_msg='invalid roomName')
-    #
-    #         device = DeviceInfo.objects.filter(roomId=request.query_params['roomId'], workstation_id=request.query_params['workstationId'], owner_id=request.user.id).last()
-    #         if (device == None):
-    #             Log.error('device {} not presenced'.format(request.query_params['roomId']))
-    #             return IoTErrorResponse.GenResponse(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_WORKSTATION_NOT_PRESENCED, error_msg='device not presenced')
-    #
-    #         device.name = request.data['roomName']
-    #         device.save()
-    #         return IoTSuccessResponse().GenResponse(data=device.to_dict())
-    #     except Exception as err:
-    #         Log.exception('iWebServerDeviceView put err:[' + str(err) + ']')
-    #     return IoTErrorResponse.GenResponse()
 
     @iwebserver_logger_c
     def delete(self, request):
