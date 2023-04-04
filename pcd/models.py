@@ -1,11 +1,11 @@
-import logging
+from interface.utils.log_utils import loggerr
 from django.contrib.auth.models import User
 from django.db import models
 from pcd.config import iWebServerConfig
 from interface.models import ModelCommonInfo
 from django.utils.translation import gettext as _
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 DEVICE_TYPE_CHOICES = (

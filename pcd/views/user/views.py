@@ -1,4 +1,4 @@
-import logging
+from interface.utils.log_utils import loggerr
 from django.contrib.auth.models import User
 from rest_framework.generics import GenericAPIView
 from pcd.config import iWebServerConfig
@@ -6,7 +6,7 @@ from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
 from interface.utils.tools import ParasUtil
 from interface.views import requires_admin_access, iwebserver_logger_c
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 class iWebServerUserView(GenericAPIView):

@@ -1,9 +1,9 @@
-import logging
+from interface.utils.log_utils import loggerr
 from interface.utils.http_util import HTTPRequestUtil
 from interface.utils.tools import CommonTools
 from pcd.config import iWebServerConfig
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 class JanusHTTPRequestUtil(HTTPRequestUtil):

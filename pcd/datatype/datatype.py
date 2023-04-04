@@ -1,9 +1,10 @@
 import json
 import logging
+from interface.utils.log_utils import loggerr
 from interface.datatype.datatype import JsonDatatypeBase, IoTBase
 from pcd.models import DeviceInfo
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 # https://www.wolai.com/yang_ids/e5UPobHGfhX85QEiW4fkQa#iZqoAUDZjokXtzfkaGiYqg
@@ -37,8 +38,8 @@ class DestroyContainerDataType(JsonDatatypeBase):
 
 
 # https://www.wolai.com/yang_ids/6Rqoiv5Pa3GA1NZXeXieNu#7ARJWCRRd7gQAAgujrQygX
-class DeviceWebRtcConnectionDataType(IoTBase):
-    def __init__(self, info=None):
+class DeviceWebRtcConnectionDataType(JsonDatatypeBase):
+    def __init__(self):
         self.requestId = None
         self.roomId = None
         self.roomJoinPin = None
@@ -46,10 +47,23 @@ class DeviceWebRtcConnectionDataType(IoTBase):
         self.privateId = None
         self.localMacAddress = None
 
-        IoTBase.__init__(self, info=info)
-
     def __str__(self):
         return self.to_json()
+
+    # https://www.wolai.com/yang_ids/6Rqoiv5Pa3GA1NZXeXieNu#7ARJWCRRd7gQAAgujrQygX
+    @staticmethod
+    def from_request(result: dict):
+        try:
+            device_webrtc_connection_info = DeviceWebRtcConnectionDataType()
+            device_webrtc_connection_info.publisherId = result['publisherId']
+            device_webrtc_connection_info.roomId = result['roomId']
+            device_webrtc_connection_info.roomJoinPin = result['roomJoinPin']
+            device_webrtc_connection_info.privateId = result['privateId']
+            device_webrtc_connection_info.localMacAddress = result['localMacAddress']
+            return device_webrtc_connection_info
+        except Exception as err:
+            logging.exception('from_request err:[' + str(err) + ']')
+        return None
 
     @staticmethod
     def from_ready_event(payload):
@@ -114,49 +128,6 @@ class WebsocketDeviceStatusDataType(IoTBase):
                 "msg": "OK"
             }
         }
-        '''
-
-    def update_from_ready_event(self, payload: str):
-        try:
-            info = json.loads(payload)['RmsResult']['extras']['webrtc']
-            self.publisherId = info['publisherId']
-            self.roomId = info['roomId']
-            self.roomJoinPin = info['roomJoinPin']
-            self.privateId = info['privateId']
-        except Exception as err:
-            logging.exception('update_from_request err:[' + str(err) + ']')
-
-    # https://www.wolai.com/yang_ids/6Rqoiv5Pa3GA1NZXeXieNu#7ARJWCRRd7gQAAgujrQygX
-    def update_from_request(self, result: dict):
-        try:
-            self.publisherId = result['publisherId']
-            self.roomId = result['roomId']
-            self.roomJoinPin = result['roomJoinPin']
-            self.privateId = result['privateId']
-        except Exception as err:
-            logging.exception('update_from_request err:[' + str(err) + ']')
-
-    '''
-    {
-        "RequestId": "KlDLdSudRpTV",
-        "RmsResult": {
-            "code": 0,
-            "extras": {
-                "publisherType": "webrtc",
-                "webrtc": {
-                    "GroupId": "0000000001_0242ac110001",
-                    "UserId": "0000000001",
-                    "local_mac": "20:a1:da:23:11:39",
-                    "privateId": 1184013529,
-                    "publisherId": 8979568362539330,
-                    "roomId": 2013,
-                    "roomJoinPin": "K8FtAOikRVuSLd2f",
-                    "stb_mac": "00:00:00:00:00:00"
-                }
-            },
-            "msg": "OK"
-        }
-    }
     '''
     def update_from_ready_event(self, payload: str):
         try:
@@ -167,6 +138,15 @@ class WebsocketDeviceStatusDataType(IoTBase):
             self.privateId = info['privateId']
         except Exception as err:
             logging.exception('update_from_request err:[' + str(err) + ']')
+
+    def update_from_device_webrtc_connection_info(self, device_webrtc_connection_info: DeviceWebRtcConnectionDataType):
+        try:
+            self.publisherId = device_webrtc_connection_info.publisherId
+            self.roomId = device_webrtc_connection_info.roomId
+            self.roomJoinPin = device_webrtc_connection_info.roomJoinPin
+            self.privateId = device_webrtc_connection_info.privateId
+        except Exception as err:
+            logging.exception('update_from_device_webrtc_connection_info err:[' + str(err) + ']')
 
     def update_from_device(self, device: DeviceInfo):
         self.deviceId = device.id

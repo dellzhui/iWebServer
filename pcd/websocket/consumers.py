@@ -1,14 +1,15 @@
 import json
-import logging
+from interface.utils.log_utils import loggerr
 import re
 from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
 from pcd.config import iWebServerConfig
 from pcd.datatype.datatype import WebsocketDeviceStatusDataType
 from pcd.models import DeviceInfo
 from pcd.utils.device_utils import DeviceHTTPRequestUtil
+from pcd.utils.webrtc_utils import WebRTCUtil
 from websocket.consumers import iWebServerConsumer
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 class PCDConsumer(iWebServerConsumer):
@@ -20,6 +21,7 @@ class PCDConsumer(iWebServerConsumer):
             'container_destroy': self.__container_destroy
         }
         self.__device_util = DeviceHTTPRequestUtil()
+        self.__webrtc_util = WebRTCUtil()
 
     def __container_status(self, requestId, paras):
         try:
@@ -28,14 +30,11 @@ class PCDConsumer(iWebServerConsumer):
                 return IoTErrorResponse.GenJson(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_NOT_PRESENCED, error_msg='device not presenced', requestId=requestId)
             if (not device.is_container()):
                 return IoTErrorResponse.GenJson(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_NOT_PRESENCED, error_msg='device is not container', requestId=requestId)
-            # https://www.wolai.com/yang_ids/6Rqoiv5Pa3GA1NZXeXieNu#7ARJWCRRd7gQAAgujrQygX
-            result = self._iot_util.InvokeThingService(subscribeTopicList=[f'/sys/{device.productKey}/{device.deviceName}/rrpc/response/webrtc/status/get'],
-                                                       publishTopic=f'/sys/{device.productKey}/{device.deviceName}/rrpc/request/webrtc/status/get',
-                                                       paras={},
-                                                       timeout_s=10)
-            if(result != None):
+
+            device_webrtc_connection_info_container = self.__webrtc_util.get_device_webrtc_connection_info(device)
+            if(device_webrtc_connection_info_container != None):
                 data = WebsocketDeviceStatusDataType(deviceStatus='ONLINE')
-                data.update_from_request(result)
+                data.update_from_device_webrtc_connection_info(device_webrtc_connection_info_container)
                 data.update_from_device(device)
                 return IoTSuccessResponse().GenJson(data=data.to_dict(), requestId=requestId)
             return IoTSuccessResponse().GenJson(data=WebsocketDeviceStatusDataType(deviceStatus='OFFLINE').to_dict(), requestId=requestId)
@@ -50,6 +49,8 @@ class PCDConsumer(iWebServerConsumer):
                 return IoTErrorResponse.GenJson(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_NOT_PRESENCED, error_msg='device not presenced', requestId=requestId)
             if (not device.is_container()):
                 return IoTErrorResponse.GenJson(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_NOT_PRESENCED, error_msg='device is not container', requestId=requestId)
+            if(self.__webrtc_util.get_device_webrtc_connection_info(device, timeout_s=5) != None):
+                return IoTErrorResponse.GenJson(error_msg='container already started', requestId=requestId)
             result = self.__device_util.create_container(device)
             if(result == True):
                 return IoTSuccessResponse().GenJson(requestId=requestId)
@@ -65,6 +66,8 @@ class PCDConsumer(iWebServerConsumer):
                 return IoTErrorResponse.GenJson(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_NOT_PRESENCED, error_msg='device not presenced', requestId=requestId)
             if (not device.is_container()):
                 return IoTErrorResponse.GenJson(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_NOT_PRESENCED, error_msg='device is not container', requestId=requestId)
+            if (self.__webrtc_util.get_device_webrtc_connection_info(device, timeout_s=5) == None):
+                return IoTErrorResponse.GenJson(error_msg='container already stopped', requestId=requestId)
             result = self.__device_util.destroy_container(device)
             if (result == True):
                 return IoTSuccessResponse().GenJson(requestId=requestId)
@@ -97,8 +100,6 @@ class PCDConsumer(iWebServerConsumer):
                     return self.send(text_data=data.to_json())
         except Exception as err:
             Log.exception('_on_mqtt_msg_cb err:[' + str(err) + ']')
-
-        self.send(msg)
 
     def _handle_ws_message(self, requestId, text_data_json: dict=None, bytes_data=None):
         try:

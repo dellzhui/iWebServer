@@ -1,12 +1,12 @@
 import json
-import logging
+from interface.utils.log_utils import loggerr
 from django.views.decorators.http import require_POST
 from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
 from interface.utils.tools import ParasUtil
-from interface.views import iwebserver_logger_c, iwebserver_logger_f
+from interface.views import iwebserver_logger_f
 from pcd.utils.notify_handlers import NotifyHandler
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 @require_POST

@@ -1,18 +1,18 @@
-import logging
+from interface.utils.log_utils import loggerr
 from interface.config import iWebServerBaseConfig
 from interface.utils.iot_utils import IoTUtils
 from interface.utils.tools import CommonTools
 from pcd.datatype.datatype import DeviceWebRtcConnectionDataType
 from pcd.models import DeviceInfo
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 class WebRTCUtil:
     def __init__(self):
         self._iot_util = IoTUtils(DeviceName=iWebServerBaseConfig.IWEBSERVER_MQTT_USERNAME, DeviceSecret=iWebServerBaseConfig.IWEBSERVER_MQTT_PASSWORD)
 
-    def get_device_webrtc_connection_info(self, device: DeviceInfo):
+    def get_device_webrtc_connection_info(self, device: DeviceInfo, timeout_s=10):
         try:
             # https://www.wolai.com/yang_ids/6Rqoiv5Pa3GA1NZXeXieNu#bgFTh5JP7DcCAgSLYnLJft
             result = self._iot_util.InvokeThingService(subscribeTopicList=[f'/sys/{device.productKey}/{device.deviceName}/rrpc/response/webrtc/status/get'],
@@ -20,7 +20,7 @@ class WebRTCUtil:
                                                        paras={},
                                                        timeout_s=10)
             if (result != None):
-                return DeviceWebRtcConnectionDataType(info=result)
+                return DeviceWebRtcConnectionDataType.from_request(result=result)
         except Exception as err:
             Log.exception('get_device_webrtc_connection_info err:[' + str(err) + ']')
         return None

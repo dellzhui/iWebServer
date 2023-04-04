@@ -1,7 +1,7 @@
-import logging
+from interface.utils.log_utils import loggerr
 from pcd.utils.mqtt_handlers import MQTThandlers
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 class NotifyHandler:

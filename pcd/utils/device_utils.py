@@ -1,11 +1,11 @@
 import json
-import logging
+from interface.utils.log_utils import loggerr
 from interface.utils.http_util import HTTPRequestUtil
 from pcd.config import iWebServerConfig
 from pcd.datatype.datatype import CreateContainerDataType, DestroyContainerDataType
 from pcd.models import DeviceInfo
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 class DeviceHTTPRequestUtil(HTTPRequestUtil):
@@ -39,7 +39,7 @@ class DeviceHTTPRequestUtil(HTTPRequestUtil):
 
     def create_container(self, device: DeviceInfo):
         try:
-            data = CreateContainerDataType(roomIdStr=''.format(device.room.roomId), roomJoinPin=device.room.roomJoinPin, macAddress=device.macAddress, email=device.owner.email).to_dict()
+            data = CreateContainerDataType(roomIdStr='{}'.format(device.room.roomId), roomJoinPin=device.room.roomJoinPin, macAddress=device.macAddress, email=device.owner.email).to_dict()
             Log.info('request data is {}'.format(json.dumps(data)))
             result = self.do_post(url='/api/rms/start_self_container/', data=data)
             if (result == None or not self.__is_successful_response(result)):

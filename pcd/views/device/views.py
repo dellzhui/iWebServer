@@ -1,7 +1,4 @@
-import logging
-
-from django.contrib.auth.models import User
-from guardian.shortcuts import assign_perm
+from interface.utils.log_utils import loggerr
 from rest_framework.generics import GenericAPIView
 from pcd.config import iWebServerConfig
 from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
@@ -9,9 +6,8 @@ from interface.utils.tools import ParasUtil, CommonTools
 from interface.views import iwebserver_logger_c
 from pcd.models import DeviceInfo, DEVICE_TYPE_CHOICES, WorkstationInfo, RoomInfo
 from pcd.utils.device_utils import DeviceHTTPRequestUtil
-from pcd.utils.janus_utils import JanusHTTPRequestUtil
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 class iWebServerDeviceView(GenericAPIView):

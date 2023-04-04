@@ -1,7 +1,4 @@
-import logging
-
-from django.contrib.auth.models import User
-from guardian.shortcuts import assign_perm
+from interface.utils.log_utils import loggerr
 from rest_framework.generics import GenericAPIView
 from pcd.config import iWebServerConfig
 from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
@@ -9,7 +6,7 @@ from interface.utils.tools import ParasUtil
 from interface.views import iwebserver_logger_c
 from pcd.models import WorkstationInfo
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 class iWebServerWorkstationView(GenericAPIView):

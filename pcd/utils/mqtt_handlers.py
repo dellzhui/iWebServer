@@ -1,14 +1,14 @@
 import json
 import logging
+from interface.utils.log_utils import loggerr
 import re
-
 from pcd.config import iWebServerConfig
 from pcd.datatype.datatype import DeviceWebRtcConnectionDataType
 from pcd.models import DeviceInfo
 from pcd.utils.device_utils import DeviceHTTPRequestUtil
 from pcd.utils.webrtc_utils import WebRTCUtil
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 class MQTThandlers:
