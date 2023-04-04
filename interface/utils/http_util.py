@@ -6,7 +6,7 @@ Log = logging.getLogger(__name__)
 
 
 class HTTPRequestUtil:
-    def __init__(self, base_url=None) -> None:
+    def __init__(self, base_url=None):
         self._BASE_URL = base_url
 
     def do_get(self, url, timeout=30):

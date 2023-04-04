@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 import random
 
 from interface.config import iWebServerBaseConfig
@@ -101,7 +100,7 @@ class IoTUtils:
         return None
 
     # https://www.wolai.com/yang_ids/6Rqoiv5Pa3GA1NZXeXieNu#nRfXCyAHaZGove28yTgVye
-    def SetHubPublishingAction(self, publishTopic, paras: dict, timeout_s=20):
+    def InvokeThingServiceWithoutResponse(self, publishTopic, paras: dict):
         try:
             Log.info('paras is {}'.format(json.dumps(paras)))
             host_list = self.__get_mosquitto_host_list()
@@ -121,8 +120,7 @@ class IoTUtils:
                                                     RequestId=None,
                                                     PublishTopic=publishTopic,
                                                     PublishPayload=json.dumps(paras),
-                                                    WaitingForPublish=False,
-                                                    WaitingForPublishTimeoutS=timeout_s))
+                                                    WaitingForPublish=False))
             Log.info('InvokeThingService:we will start mqtt task')
             mqtt_util.start_mqtt_task_sync(handle=mqtt_util)
             return True
