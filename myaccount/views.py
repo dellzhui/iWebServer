@@ -1,17 +1,13 @@
-import logging
-
+from interface.utils.log_utils import loggerr
 from django.contrib.auth.models import User, Group
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
-
-from interface.utils.log_utils import loggerr
 from .models import UserProfile
 from .forms import ProfileForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 
-# Log = loggerr(__name__).getLogger()
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 def profile(request):

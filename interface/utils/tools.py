@@ -1,7 +1,7 @@
 import base64
 import datetime
 import json
-import logging
+from interface.utils.log_utils import loggerr
 import pickle
 import random
 import re
@@ -14,7 +14,7 @@ import pymysql
 from Crypto.Cipher import AES
 from iWebServer.settings import DATABASES
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 class SqlQueryUtil:

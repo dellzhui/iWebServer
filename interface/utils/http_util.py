@@ -1,8 +1,8 @@
 import json
-import logging
+from interface.utils.log_utils import loggerr
 import requests
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 class HTTPRequestUtil:
