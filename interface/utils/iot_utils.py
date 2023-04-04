@@ -1,12 +1,10 @@
 import json
-import logging
+from interface.utils.log_utils import loggerr
 import random
-
 from interface.config import iWebServerBaseConfig
 from interface.utils.mqtt_utils import MqttUtils, MqttConfig
-from interface.utils.tools import CommonTools
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 class IoTUtils:
@@ -44,7 +42,7 @@ class IoTUtils:
     def __on_message(self, topic, msg):
         return self.__on_message_cb(topic, msg)
 
-    def StartMqttTaskAsync(self):
+    def StartMqttTask(self, sync: bool=True):
         host_list = self.__get_mosquitto_host_list()
         if (host_list == None or len(host_list) == 0):
             Log.error('mqtt server list is None')
@@ -59,9 +57,15 @@ class IoTUtils:
                                                     MqttKeepAliveTime_S=self.MqttKeepAliveTime_S,
                                                     SubscribeTopicList=self.__sub_topic_list,
                                                     on_message_cb=self.__on_message))
-            Log.info('StartMqttTaskAsync:we will start mqtt task')
-            mqtt_util.start_mqtt_task_async(handle=mqtt_util)
+            Log.info('StartMqttTask:we will start mqtt task')
+            if(sync):
+                mqtt_util.start_mqtt_task_sync(handle=mqtt_util)
+            else:
+                mqtt_util.start_mqtt_task_async(handle=mqtt_util)
             self.__mqtt_utils.append(mqtt_util)
+
+    def StartMqttTaskAsync(self):
+        self.StartMqttTask(sync=False)
 
     def StopMqttTask(self):
         Log.info('StopMqttTask:we will stop mqtt task')

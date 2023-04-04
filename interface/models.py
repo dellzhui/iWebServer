@@ -1,6 +1,6 @@
 import datetime
 import json
-import logging
+from interface.utils.log_utils import loggerr
 from json import JSONEncoder
 from django.db import models
 from django.db.models.base import ModelState
@@ -9,7 +9,7 @@ from rest_framework.request import Request
 
 from interface.config import iWebServerBaseConfig
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 class IdmsModelEncoder(JSONEncoder):

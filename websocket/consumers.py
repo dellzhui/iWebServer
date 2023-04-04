@@ -1,5 +1,5 @@
 import json
-import logging
+from interface.utils.log_utils import loggerr
 from channels.generic.websocket import WebsocketConsumer
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
@@ -11,7 +11,7 @@ from interface.config import iWebServerBaseConfig
 from interface.datatype.datatype import IoTSuccessResponse, IoTErrorResponse
 from interface.utils.iot_utils import IoTUtils
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 class iWebServerConsumer(WebsocketConsumer):

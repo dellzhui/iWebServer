@@ -1,13 +1,13 @@
 import json
-import logging
 import re
 import ssl
 import time
 from paho.mqtt import client as mqtt
 from interface.config import iWebServerBaseConfig
+from interface.utils.log_utils import loggerr
 from interface.utils.tools import DBHandleTask, CommonTools
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 class MqttConfig:

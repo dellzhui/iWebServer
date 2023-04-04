@@ -1,5 +1,5 @@
 import json
-import logging
+from interface.utils.log_utils import loggerr
 from functools import wraps
 
 from django.contrib.auth.models import User
@@ -13,7 +13,7 @@ from interface.models import RequestRecordInfo
 from interface.utils.UserControlUtils import UserUtils
 from interface.utils.tools import ParasUtil
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 def iwebserver_logger_f(func):
     @wraps(func)

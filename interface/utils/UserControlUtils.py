@@ -1,4 +1,4 @@
-import logging
+from interface.utils.log_utils import loggerr
 from django.contrib import auth
 from django.contrib.auth.models import Group, User
 from django.shortcuts import get_object_or_404
@@ -6,7 +6,7 @@ from guardian.shortcuts import get_objects_for_user, assign_perm, remove_perm, g
 from interface.config import iWebServerBaseConfig
 from interface.models import UserControl
 
-Log = logging.getLogger(__name__)
+Log = loggerr(__name__).getLogger()
 
 
 class UserControlUtils:
