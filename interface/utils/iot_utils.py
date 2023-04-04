@@ -75,25 +75,21 @@ class IoTUtils:
                 Log.error('mqtt server list is None')
                 return None
 
-            if (paras != None):
-                paras['requestId'] = CommonTools.getRamdomString(16)
-
-            mqtt_util = MqttUtils(config=MqttConfig(MqttMode=MqttConfig.MQTT_CONFIG_MODE_PUB,
+            mqtt_util = MqttUtils(config=MqttConfig(MqttMode=MqttConfig.MQTT_CONFIG_MODE_RRPC,
                                                     MqttUser=self.DeviceName,
                                                     MqttPassword=self.DeviceSecret,
                                                     MqttServerUrl=host_list[0]['host'],
                                                     MqttServerPort=host_list[0]['port'],
                                                     MqttKeepAliveTime_S=self.MqttKeepAliveTime_S,
-                                                    RequestId=paras['requestId'],
                                                     SubscribeTopicList=subscribeTopicList,
                                                     PublishTopic=publishTopic,
-                                                    PublishPayload=json.dumps(paras),
+                                                    PublishPayload=paras,
                                                     WaitingForPublishTimeoutS=timeout_s))
             Log.info('InvokeThingService:we will start mqtt task')
             mqtt_util.start_mqtt_task_sync(handle=mqtt_util)
             rrpc_result_str = mqtt_util.get_received_onpublish_payload()
             if (rrpc_result_str != None):
-                return json.loads(rrpc_result_str)
+                return rrpc_result_str
             return None
         except Exception as err:
             Log.exception('InvokeThingService err:[' + str(err) + ']')
@@ -108,19 +104,14 @@ class IoTUtils:
                 Log.error('mqtt server list is None')
                 return False
 
-            if (paras != None):
-                paras['requestId'] = CommonTools.getRamdomString(16)
-
             mqtt_util = MqttUtils(config=MqttConfig(MqttMode=MqttConfig.MQTT_CONFIG_MODE_PUB,
                                                     MqttUser=self.DeviceName,
                                                     MqttPassword=self.DeviceSecret,
                                                     MqttServerUrl=host_list[0]['host'],
                                                     MqttServerPort=host_list[0]['port'],
                                                     MqttKeepAliveTime_S=self.MqttKeepAliveTime_S,
-                                                    RequestId=None,
                                                     PublishTopic=publishTopic,
-                                                    PublishPayload=json.dumps(paras),
-                                                    WaitingForPublish=False))
+                                                    PublishPayload=paras))
             Log.info('InvokeThingService:we will start mqtt task')
             mqtt_util.start_mqtt_task_sync(handle=mqtt_util)
             return True

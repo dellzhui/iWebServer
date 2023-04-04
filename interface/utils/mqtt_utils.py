@@ -5,7 +5,7 @@ import ssl
 import time
 from paho.mqtt import client as mqtt
 from interface.config import iWebServerBaseConfig
-from interface.utils.tools import DBHandleTask
+from interface.utils.tools import DBHandleTask, CommonTools
 
 Log = logging.getLogger(__name__)
 
@@ -13,19 +13,18 @@ Log = logging.getLogger(__name__)
 class MqttConfig:
     MQTT_CONFIG_MODE_SUB = 'sub'
     MQTT_CONFIG_MODE_PUB = 'pub'
+    MQTT_CONFIG_MODE_RRPC = 'rrpc'
 
-    def __init__(self, MqttMode=MQTT_CONFIG_MODE_SUB, MqttUser=None, MqttPassword=None, MqttServerUrl=None, MqttServerPort=1883, MqttKeepAliveTime_S=60, RequestId=None, SubscribeTopicList=None, PublishTopic=None, PublishPayload: str=None, WaitingForPublish=True, WaitingForPublishTimeoutS=20, on_message_cb=None):
+    def __init__(self, MqttMode=None, MqttUser=None, MqttPassword=None, MqttServerUrl=None, MqttServerPort=1883, MqttKeepAliveTime_S=60, SubscribeTopicList=None, PublishTopic=None, PublishPayload: dict=None, WaitingForPublishTimeoutS=20, on_message_cb=None):
         self.MqttMode = MqttMode
         self.MqttUser = MqttUser
         self.MqttPassword = MqttPassword
         self.MqttServerUrl = MqttServerUrl
         self.MqttServerPort = MqttServerPort
         self.MqttKeepAliveTime_S = MqttKeepAliveTime_S
-        self.RequestId = RequestId
         self.SubscribeTopicList = SubscribeTopicList
         self.PublishTopic = PublishTopic
-        self.PublishPayload: str = PublishPayload
-        self.WaitingForPublish = WaitingForPublish
+        self.PublishPayload: dict = PublishPayload
         self.WaitingForPublishTimeoutS = WaitingForPublishTimeoutS
         self.on_message_cb = on_message_cb
 
@@ -36,29 +35,33 @@ class MqttConfig:
         self.IOT_TLS_PORT = iWebServerBaseConfig.IWEBSERVER_MQTT_TLS_PORT
         self.DEFAULT_IOT_TLS_PORT = 8883
 
+        self.RequestId = CommonTools.getRamdomString(16)
+
     def __is_paras_empty(self, paras: list):
         for item in paras:
-            if(item == None or item == ''):
+            if((item == None) or (isinstance(item, str) and item == '')):
                 return True
         return False
 
     def is_mqtt_config_valid(self):
-        if(self.MqttMode not in [MqttConfig.MQTT_CONFIG_MODE_SUB, MqttConfig.MQTT_CONFIG_MODE_PUB]):
+        if(self.MqttMode == None or self.MqttMode not in [MqttConfig.MQTT_CONFIG_MODE_SUB, MqttConfig.MQTT_CONFIG_MODE_PUB, MqttConfig.MQTT_CONFIG_MODE_RRPC]):
             return False
 
-        if (self.__is_paras_empty([self.MqttUser, self.MqttPassword, self.MqttServerUrl, self.MqttServerPort, self.MqttKeepAliveTime_S, self.SubscribeTopicList])):
+        if (self.__is_paras_empty([self.MqttUser, self.MqttPassword, self.MqttServerUrl, self.MqttServerPort, self.MqttKeepAliveTime_S])):
             return False
 
-        if (self.MqttMode in [MqttConfig.MQTT_CONFIG_MODE_SUB]):
-            if(self.on_message_cb == None):
+        if (self.MqttMode == MqttConfig.MQTT_CONFIG_MODE_SUB):
+            if(self.__is_paras_empty([self.on_message_cb, self.SubscribeTopicList])):
                 return False
 
-        if (self.MqttMode in [MqttConfig.MQTT_CONFIG_MODE_PUB]):
-            if(self.__is_paras_empty([self.PublishTopic, self.PublishPayload, self.WaitingForPublish])):
+        if (self.MqttMode == MqttConfig.MQTT_CONFIG_MODE_PUB):
+            if(self.__is_paras_empty([self.PublishTopic, self.PublishPayload])):
                 return False
-            if(self.WaitingForPublish == True):
-                if(self.__is_paras_empty(self.RequestId)):
-                    return False
+
+        if (self.MqttMode == MqttConfig.MQTT_CONFIG_MODE_RRPC):
+            if(self.__is_paras_empty([self.SubscribeTopicList, self.PublishTopic, self.PublishPayload, self.WaitingForPublishTimeoutS])):
+                return False
+
         return True
 
 
@@ -71,7 +74,7 @@ class MqttUtils:
         # self.mqttClient.on_log = self._on_log
         self.mqttClient.on_socket_close = self._on_socket_close
 
-        self.OnPublishPayload = None
+        self.OnPublishPayload: dict | None = None
         self._stopped = False
         self._connected = False
         self._published = False
@@ -80,7 +83,7 @@ class MqttUtils:
         Log.log(level, 'on log:{}'.format(buf))
 
     def _on_socket_close(self, client, userdata, sock):
-        if(self.mqttConfig.MqttMode == MqttConfig.MQTT_CONFIG_MODE_PUB):
+        if(self.mqttConfig.MqttMode != MqttConfig.MQTT_CONFIG_MODE_SUB):
             return
         Log.error('_on_socket_close')
         self._connected = False
@@ -107,18 +110,25 @@ class MqttUtils:
         if (self.mqttConfig.MqttMode != MqttConfig.MQTT_CONFIG_MODE_PUB):
             return
 
+        if (self.mqttConfig.PublishTopic != None):
+            payload = json.dumps(self.mqttConfig.PublishPayload)
+            Log.info('we will pub topic {} with payload {}'.format(self.mqttConfig.PublishTopic, payload))
+            client.publish(topic=self.mqttConfig.PublishTopic, payload=payload, qos=0)
+            self._published = True
+
+    def __on_connect_mode_rrpc(self, client):
+        if (self.mqttConfig.MqttMode != MqttConfig.MQTT_CONFIG_MODE_RRPC):
+            return
+
         if (self.mqttConfig.SubscribeTopicList != None):
             for item in self.mqttConfig.SubscribeTopicList:
                 Log.info('we will sub ' + item)
                 client.subscribe(item, 0)
 
         if (self.mqttConfig.PublishTopic != None):
-            Log.info('we will pub ' + self.mqttConfig.PublishTopic)
-            Log.info(self.mqttConfig.PublishPayload)
-            client.publish(topic=self.mqttConfig.PublishTopic, payload=self.mqttConfig.PublishPayload, qos=0)
-
-        if (self.mqttConfig.WaitingForPublish == False):
-            self._published = True
+            payload = json.dumps({'requestId': self.mqttConfig.RequestId, 'rrpcParas': self.mqttConfig.PublishPayload})
+            Log.info('we will pub topic {} with payload {}'.format(self.mqttConfig.PublishTopic, payload))
+            client.publish(topic=self.mqttConfig.PublishTopic, payload=payload, qos=0)
 
     def __on_connect(self, client, userdata, flags, rc):
         Log.info("Connected with result code "+str(rc))
@@ -127,6 +137,8 @@ class MqttUtils:
             self.__on_connect_mode_sub(client)
         elif(self.mqttConfig.MqttMode == MqttConfig.MQTT_CONFIG_MODE_PUB):
             self.__on_connect_mode_pub(client)
+        elif (self.mqttConfig.MqttMode == MqttConfig.MQTT_CONFIG_MODE_RRPC):
+            self.__on_connect_mode_rrpc(client)
 
         self._connected = True
 
@@ -140,19 +152,16 @@ class MqttUtils:
             if(self.mqttConfig.MqttMode == MqttConfig.MQTT_CONFIG_MODE_SUB):
                 if (self.mqttConfig.on_message_cb != None):
                     self.mqttConfig.on_message_cb(msg.topic, payload)
-            elif(self.mqttConfig.MqttMode == MqttConfig.MQTT_CONFIG_MODE_PUB):
-                try:
-                    response = json.loads(payload)
-                    if(self.mqttConfig.RequestId != None):
-                        if ('RequestId' not in response):
-                            return
-                        if (self.mqttConfig.RequestId == None or self.mqttConfig.RequestId != response['RequestId']):
-                            Log.info('received another request_id')
-                            return
-                except Exception as err:
-                    Log.exception('err:[' + str(err) + ']')
+            elif(self.mqttConfig.MqttMode == MqttConfig.MQTT_CONFIG_MODE_RRPC):
+                response = json.loads(payload)
+                if ('requestId' not in response):
+                    Log.error('requestId not in response')
                     return
-                self.OnPublishPayload = payload
+                if (self.mqttConfig.RequestId != response['requestId']):
+                    Log.info('received another request_id, this requestId is {}, got requestId is {}'.format(self.mqttConfig.RequestId, response['requestId']))
+                    return
+                if('rrpcResult' in response):
+                    self.OnPublishPayload = response['rrpcResult']
                 self._published = True
         except Exception as err:
             Log.exception('__on_message err:[' + str(err) + ']')
@@ -198,7 +207,7 @@ class MqttUtils:
         mqtt_utils.mqttClient.loop(timeout=1.0)
         index = 0
         while (mqtt_utils._stopped == False):
-            if(mqtt_utils.mqttConfig.MqttMode == MqttConfig.MQTT_CONFIG_MODE_PUB):
+            if(mqtt_utils.mqttConfig.MqttMode in [MqttConfig.MQTT_CONFIG_MODE_PUB, MqttConfig.MQTT_CONFIG_MODE_RRPC]):
                 if(index < mqtt_utils.mqttConfig.WaitingForPublishTimeoutS and mqtt_utils._published == False):
                     Log.info('waiting for onpublish:' + str(index + 1))
                 else:
