@@ -1,6 +1,8 @@
 import json
 import logging
 import re
+
+from pcd.config import iWebServerConfig
 from pcd.datatype.datatype import DeviceWebRtcConnectionDataType
 from pcd.models import DeviceInfo
 from pcd.utils.device_utils import DeviceHTTPRequestUtil
@@ -20,8 +22,9 @@ class MQTThandlers:
             if (device_webrtc_connection_info_container != None):
                 Log.info('container is online')
                 return self.__webrtc_util.bind_hub_to_container(container, device_webrtc_connection_info_hub)
-            Log.info('container is offline, we will create it')
-            return self.__device_util.create_container(container)
+            if(iWebServerConfig.IWEBSERVER_WEBRTC_AUTO_CREATE_CONTAINER_ON_HUB_READY == True):
+                Log.info('container is offline, we will create it')
+                return self.__device_util.create_container(container)
         except Exception as err:
             Log.exception('__mqtt_handler_hub_ready err:[' + str(err) + ']')
         return False

@@ -14,6 +14,7 @@ class WebRTCUtil:
 
     def get_device_webrtc_connection_info(self, device: DeviceInfo):
         try:
+            # https://www.wolai.com/yang_ids/6Rqoiv5Pa3GA1NZXeXieNu#bgFTh5JP7DcCAgSLYnLJft
             result = self._iot_util.InvokeThingService(subscribeTopicList=[f'/sys/{device.productKey}/{device.deviceName}/rrpc/response/webrtc/status/get'],
                                                        publishTopic=f'/sys/{device.productKey}/{device.deviceName}/rrpc/request/webrtc/status/get',
                                                        paras={},
@@ -73,6 +74,7 @@ class WebRTCUtil:
                                 "privateId": f'{device_webrtc_connection_info_container.privateId}',
                                 "publisherId": f'{device_webrtc_connection_info_container.publisherId}',
                                 "roomId": f'{device_webrtc_connection_info_container.roomId}',
+                                'roomJoinPin': f'{device_webrtc_connection_info_container.roomJoinPin}',
                                 "stb_mac": stb.macAddress
                             }
                         },
