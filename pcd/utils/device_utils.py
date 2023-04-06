@@ -21,7 +21,7 @@ class DeviceHTTPRequestUtil(HTTPRequestUtil):
 
     def regisiter(self, device: DeviceInfo):
         try:
-            data = device.to_regisitr_request_data()
+            data = device.to_regisiter_request_data()
             Log.info('got registe request data is {}'.format(data))
             result = self.do_post(url='/api/device/autoregister/', data=data)
             if (result == None or not self.__is_successful_response(result)):
