@@ -62,7 +62,7 @@ class iWebServerConsumer(WebsocketConsumer):
                 if(self._user != None):
                     self._iot_util = IoTUtils(DeviceName=iWebServerBaseConfig.IWEBSERVER_MQTT_USERNAME, DeviceSecret=iWebServerBaseConfig.IWEBSERVER_MQTT_PASSWORD, on_message_cb=self._on_mqtt_msg_cb, sub_topic_list=self._sub_topic_list)
                     self._iot_util.StartMqttTaskAsync()
-                    return self.send(text_data=json.dumps(IoTSuccessResponse().GenJson(data={'message': 'auth succeed'}, requestId=requestId)))
+                    return self.send(text_data=json.dumps(IoTSuccessResponse().GenJson(data={'message': '{} auth succeed'.format(self._user.username)}, requestId=requestId)))
 
             if (self._user == None):
                 Log.error('not authed')
