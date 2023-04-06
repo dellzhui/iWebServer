@@ -62,7 +62,7 @@ class DeviceWebRtcConnectionDataType(JsonDatatypeBase):
             device_webrtc_connection_info.localMacAddress = result['localMacAddress']
             return device_webrtc_connection_info
         except Exception as err:
-            logging.exception('from_request err:[' + str(err) + ']')
+            Log.exception('from_request err:[' + str(err) + ']')
         return None
 
     @staticmethod
@@ -137,7 +137,7 @@ class WebsocketDeviceStatusDataType(IoTBase):
             self.roomJoinPin = info['roomJoinPin']
             self.privateId = info['privateId']
         except Exception as err:
-            logging.exception('update_from_request err:[' + str(err) + ']')
+            Log.exception('update_from_request err:[' + str(err) + ']')
 
     def update_from_device_webrtc_connection_info(self, device_webrtc_connection_info: DeviceWebRtcConnectionDataType):
         try:
@@ -146,7 +146,7 @@ class WebsocketDeviceStatusDataType(IoTBase):
             self.roomJoinPin = device_webrtc_connection_info.roomJoinPin
             self.privateId = device_webrtc_connection_info.privateId
         except Exception as err:
-            logging.exception('update_from_device_webrtc_connection_info err:[' + str(err) + ']')
+            Log.exception('update_from_device_webrtc_connection_info err:[' + str(err) + ']')
 
     def update_from_device(self, device: DeviceInfo):
         self.deviceId = device.id

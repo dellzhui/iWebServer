@@ -18,6 +18,8 @@ class MQTThandlers:
 
     def __mqtt_handler_hub_ready(self, container: DeviceInfo, device_webrtc_connection_info_hub: DeviceWebRtcConnectionDataType):
         try:
+            if(container == None or device_webrtc_connection_info_hub == None):
+                return False
             device_webrtc_connection_info_container = self.__webrtc_util.get_device_webrtc_connection_info(container)
             if (device_webrtc_connection_info_container != None):
                 Log.info('container is online')
@@ -43,7 +45,7 @@ class MQTThandlers:
         return False
 
     def notify(self, payload: dict):
-        logging.info('got data is {}'.format(json.dumps(payload)))
+        Log.info('got data is {}'.format(json.dumps(payload)))
         try:
             '''
             {
@@ -88,10 +90,10 @@ class MQTThandlers:
                 Log.error('can not get bound device info')
                 return False
             if(device.is_hub()):
-                device_webrtc_connection_info_hub = DeviceWebRtcConnectionDataType.from_ready_event(payload)
+                device_webrtc_connection_info_hub = DeviceWebRtcConnectionDataType.from_ready_event(payload['payload'])
                 return self.__mqtt_handler_hub_ready(container=bound_device_info['container'], device_webrtc_connection_info_hub=device_webrtc_connection_info_hub)
             if (device.is_container()):
-                device_webrtc_connection_info_container = DeviceWebRtcConnectionDataType.from_ready_event(payload)
+                device_webrtc_connection_info_container = DeviceWebRtcConnectionDataType.from_ready_event(payload['payload'])
                 return self.__mqtt_handler_container_ready(container=device, hub=bound_device_info['hub'], stb=bound_device_info['stb'], device_webrtc_connection_info_container=device_webrtc_connection_info_container)
             # TODO: handle stb
         except Exception as err:

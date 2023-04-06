@@ -24,7 +24,36 @@ class MQTTSubscriberService:
     def _on_mqtt_msg_cb(self, topic, msg: str):
         try:
             Log.info('topic:[{}], payload:[{}]'.format(topic, msg))
-            result = self.http_util.do_post(url='/notify/webrtc', data={'type': 'mqtt', 'data': json.loads(msg)})
+            '''
+            {
+                "type": "mqtt",
+                "data": {
+                    "topic": "xxx",
+                    "payload": {
+                        "RequestId": "KlDLdSudRpTV",
+                        "RmsResult": {
+                            "code": 0,
+                            "extras": {
+                                "publisherType": "webrtc",
+                                "webrtc": {
+                                    "GroupId": "0000000001_0242ac110001",
+                                    "UserId": "0000000001",
+                                    "local_mac": "20:a1:da:23:11:39",
+                                    "privateId": 1184013529,
+                                    "publisherId": 8979568362539330,
+                                    "roomId": 2013,
+                                    "roomJoinPin": "K8FtAOikRVuSLd2f",
+                                    "stb_mac": "00:00:00:00:00:00"
+                                }
+                            },
+                            "msg": "OK"
+                        }
+                    }
+                }
+            }
+            '''
+            result = self.http_util.do_post(url='/notify/webrtc', data={'type': 'mqtt', 'data': {'topic': topic, 'payload': json.loads(msg)}})
+            Log.info('notify post result is {}'.format(result))
         except Exception as err:
             Log.exception('_on_mqtt_msg_cb err:[' + str(err) + ']')
 

@@ -16,5 +16,5 @@ class NotifyHandler:
         try:
             return self.__handlers[handler_type].notify(data)
         except Exception as err:
-            logging.exception('notify err:[' + str(err) + ']')
+            Log.exception('notify err:[' + str(err) + ']')
         return False

@@ -48,7 +48,9 @@ class WebRTCUtil:
                     paras={
                         'actionName': 'control',
                         'paras': {
-                            'control': 'run'
+                            'control': {
+                                'action': 'run'
+                            }
                         }
                     })
                 return result
@@ -60,6 +62,8 @@ class WebRTCUtil:
 
     def notify_stb_ready_container(self, stb: DeviceInfo, container: DeviceInfo, device_webrtc_connection_info_container: DeviceWebRtcConnectionDataType):
         try:
+            if(stb == None or container == None or device_webrtc_connection_info_container == None):
+                return False
             # https://www.wolai.com/yang_ids/3ULPJT5hb1d2yZrm9zfoh6#pSNQd1CB9cnevc9xuvSCrj
             result = self._iot_util.InvokeThingServiceWithoutResponse(
                 publishTopic=f'/sys/stb/rms/{stb.productKey}/{stb.deviceName}/response/publisherReady',

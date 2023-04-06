@@ -13,6 +13,34 @@ Log = loggerr(__name__).getLogger()
 @iwebserver_logger_f
 def notify_webrtc(request):
     try:
+        '''
+        {
+            "type": "mqtt",
+            "data": {
+                "topic": "xxx",
+                "payload": {
+                    "RequestId": "KlDLdSudRpTV",
+                    "RmsResult": {
+                        "code": 0,
+                        "extras": {
+                            "publisherType": "webrtc",
+                            "webrtc": {
+                                "GroupId": "0000000001_0242ac110001",
+                                "UserId": "0000000001",
+                                "local_mac": "20:a1:da:23:11:39",
+                                "privateId": 1184013529,
+                                "publisherId": 8979568362539330,
+                                "roomId": 2013,
+                                "roomJoinPin": "K8FtAOikRVuSLd2f",
+                                "stb_mac": "00:00:00:00:00:00"
+                            }
+                        },
+                        "msg": "OK"
+                    }
+                }
+            }
+        }
+        '''
         request_data = json.loads(request.body.decode('utf-8'))
 
         if (ParasUtil.is_missing_paras(request_data, ['type', 'data'])):
