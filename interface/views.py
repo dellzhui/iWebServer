@@ -72,7 +72,7 @@ def access_token(request):
         user_util = UserUtils(username, password)
         if(user_util.auto_login(request)):
             refresh = RefreshToken.for_user(user_util.get_user())
-            return AuthResponseInfo(access=str(refresh.access_token), refresh=str(refresh)).GenResponse()
+            return AuthResponseInfo(access=str(refresh.access_token), refresh=str(refresh), isAdmin=user_util.is_admin()).GenResponse()
         return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_INVALID_PASSWORD, error_msg='invalid password')
     except Exception as err:
         Log.exception('access_token post err:[' + str(err) + ']')
