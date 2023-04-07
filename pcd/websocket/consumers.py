@@ -94,12 +94,12 @@ class PCDConsumer(iWebServerConsumer):
             device_webrtc_connection_info_container = self.__webrtc_util.get_device_webrtc_connection_info(container)
             if(device_webrtc_connection_info_container == None):
                 Log.error('container not online')
-                return IoTErrorResponse.GenJson(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_NOT_PRESENCED, error_msg='can not get bound hub info', requestId=requestId)
+                return IoTErrorResponse.GenJson(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_NOT_PRESENCED, error_msg='container not online', requestId=requestId)
 
             device_webrtc_connection_info_hub = self.__webrtc_util.get_device_webrtc_connection_info(hub)
             if (device_webrtc_connection_info_hub == None):
                 Log.error('hub not online')
-                return IoTErrorResponse.GenJson(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_NOT_PRESENCED, error_msg='can not get bound hub info', requestId=requestId)
+                return IoTErrorResponse.GenJson(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_NOT_PRESENCED, error_msg='hub not online', requestId=requestId)
             if(self.__webrtc_util.bind_hub_to_container(container, device_webrtc_connection_info_hub) == False):
                 return IoTErrorResponse.GenJson(error_msg='bind failed', requestId=requestId)
             return IoTSuccessResponse().GenJson(data='bind succeed', requestId=requestId)
