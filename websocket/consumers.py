@@ -27,7 +27,7 @@ class iWebServerConsumer(WebsocketConsumer):
     def _on_mqtt_msg_cb(self, topic, msg):
         self.send(msg)
 
-    def _handle_ws_message(self, requestId, text_data_json: dict=None, bytes_data=None):
+    def _handle_ws_message(self, requestId, type: str, paras=None, bytes_data=None):
         return self.send(text_data=json.dumps(IoTSuccessResponse().GenJson(data={'message': 'succeed'}, requestId=requestId)))
 
     def connect(self):
@@ -45,12 +45,13 @@ class iWebServerConsumer(WebsocketConsumer):
             text_data_json = json.loads(text_data)
             type = text_data_json['type']
             requestId = text_data_json['requestId']
+            paras = text_data_json['paras']
             if (self._user == None):
                 if (type != 'auth'):
                     Log.error('not authed')
                     self.send(text_data=json.dumps(IoTErrorResponse.GenJson(error_msg='not authed', requestId=requestId)))
                     return self.close()
-                access_token = text_data_json['access_token']
+                access_token = paras['access_token']
                 try:
                     UntypedToken(access_token)
                 except (InvalidToken, TokenError) as err:
@@ -73,7 +74,7 @@ class iWebServerConsumer(WebsocketConsumer):
                 Log.info('already authed')
                 return self.send(text_data=json.dumps(IoTSuccessResponse().GenJson(data={'message': 'already authed'}, requestId=requestId)))
 
-            return self._handle_ws_message(requestId=requestId, text_data_json=text_data_json, bytes_data=bytes_data)
+            return self._handle_ws_message(requestId=requestId, type=type, paras=paras, bytes_data=bytes_data)
         except Exception as err:
             Log.exception('receive err:[' + str(err) + ']')
             self.send(text_data=json.dumps(IoTErrorResponse.GenJson()))
