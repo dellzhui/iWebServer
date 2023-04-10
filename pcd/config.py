@@ -32,6 +32,7 @@ class iWebServerConfig(iWebServerBaseConfig):
 
     # device
     IWEBSERVER_DEVICE_BASE_URL = os.environ.get('IWEBSERVER_DEVICE_BASE_URL')
+    IWEBSERVER_DEVICE_MEETING_CONTRIL_BASE_URL = os.environ.get('IWEBSERVER_DEVICE_MEETING_CONTRIL_BASE_URL')
 
     # webrtc
     IWEBSERVER_WEBRTC_AUTO_CREATE_CONTAINER_ON_HUB_READY = False if (os.environ.get('IWEBSERVER_WEBRTC_AUTO_CREATE_CONTAINER_ON_HUB_READY', 'True') == 'False') else True

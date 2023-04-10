@@ -1,3 +1,5 @@
+import time
+
 from interface.utils.log_utils import loggerr
 from interface.config import iWebServerBaseConfig
 from interface.utils.iot_utils import IoTUtils
@@ -92,4 +94,31 @@ class WebRTCUtil:
             return False
         except Exception as err:
             Log.exception('notify_stb_ready_container err:[' + str(err) + ']')
+        return False
+
+    def container_join_to_room(self, container: DeviceInfo, roomId: int, roomJoinPin: str):
+        try:
+            # https://www.wolai.com/yang_ids/6Rqoiv5Pa3GA1NZXeXieNu#uMTRVtj4iwHSxGHq2MAoe1
+            result = self._iot_util.InvokeThingServiceWithoutResponse(
+                publishTopic=f'/sys/{container.productKey}/{container.deviceName}/rrpc/request/webrtc/connection/put',
+                paras={
+                    'requestId': CommonTools.getRamdomString(16),
+                    'rrpcParas': {
+                        'roomId': roomId,
+                        'roomJoinPin': roomJoinPin
+                    }
+                })
+            if (result == True):
+                try_count = 10
+                while(try_count > 0):
+                    device_webrtc_connection_info = self.get_device_webrtc_connection_info(device=container)
+                    if(device_webrtc_connection_info != None and device_webrtc_connection_info.roomId == roomId):
+                        Log.info('join room {} succeed'.format(roomId))
+                        return True
+                    try_count -= 1
+                    time.sleep(5)
+            Log.info('join room {} failed'.format(roomId))
+            return False
+        except Exception as err:
+            Log.exception('container_join_to_room err:[' + str(err) + ']')
         return False

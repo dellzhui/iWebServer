@@ -36,6 +36,19 @@ class DestroyContainerDataType(JsonDatatypeBase):
     def __str__(self):
         return self.to_json()
 
+# https://www.wolai.com/yang_ids/e5UPobHGfhX85QEiW4fkQa#6BDw9WT2SpktspRtzjZhDk
+class DeViceMeDataType(JsonDatatypeBase):
+    def __init__(self, nameSpace, email):
+        self.namespace = nameSpace
+        self.UserEmail = email
+        self.jobName = None
+
+        if(email != None and '@' in email):
+            self.jobname = email.split('@')[0]
+
+    def __str__(self):
+        return self.to_json()
+
 
 # https://www.wolai.com/yang_ids/6Rqoiv5Pa3GA1NZXeXieNu#7ARJWCRRd7gQAAgujrQygX
 class DeviceWebRtcConnectionDataType(JsonDatatypeBase):
@@ -88,8 +101,8 @@ class DeviceWebRtcConnectionDataType(JsonDatatypeBase):
 
 
 # https://www.wolai.com/yang_ids/e5UPobHGfhX85QEiW4fkQa#5RQCMakV2sMuhQBpbRRkx4
-class WebsocketDeviceStatusDataType(IoTBase):
-    def __init__(self, info=None, deviceStatus=None):
+class WebsocketDeviceStatusDataType(JsonDatatypeBase):
+    def __init__(self, device: DeviceInfo, deviceStatus=None):
         self.deviceId: int | None = None
         self.deviceStatus: str | None = deviceStatus
         self.publisherId: int | None = None
@@ -101,8 +114,11 @@ class WebsocketDeviceStatusDataType(IoTBase):
         self.turnCredential: str | None = None
         self.rtcbotConnectUrl: str | None = None
         self.noVNCConnectUrl: str | None = None
+        self.meetingId: str | None = None
+        self.meetingUrl: str | None = None
+        self.meetingRunning: bool = False
 
-        IoTBase.__init__(self, info=info)
+        self.update_from_device(device)
 
     def __str__(self):
         return self.to_json()
@@ -155,3 +171,35 @@ class WebsocketDeviceStatusDataType(IoTBase):
         self.turnCredential = device.turnCredential
         self.rtcbotConnectUrl = device.rtcbotConnectUrl
         self.noVNCConnectUrl = device.noVNCConnectUrl
+        self.meetingId = device.meetingId
+        self.meetingUrl = device.meetingUrl
+        self.meetingRunning = device.meetingRunning
+
+
+# https://www.wolai.com/yang_ids/bg4kyCjfdMqSza4qc7tTvF#aNAcSKDn8zTAszr4VyJQ2b
+class WebsocketMeetingInfoDataType(JsonDatatypeBase):
+    def __init__(self, device: DeviceInfo):
+        self.deviceId: int = device.id
+        self.meetingId: str | None = None
+        self.meetingUrl: str | None = None
+        self.meetingRunning: bool = True if(device.meetingRunning) else False
+        self.meetingName: str | None = None
+        self.meetingBeginTime: str | None = None
+        self.meetingEndTime: str | None = None
+        self.meetingRoomId: int | None = None
+        self.meetingRoomJoinPin: str | None = None
+
+    # https://www.wolai.com/yang_ids/bg4kyCjfdMqSza4qc7tTvF#ksbxPC85Qw5j93fyBLtHMp
+    def update_from_request_result(self, result: dict):
+        try:
+            self.meetingId = result['meeting_id']
+            self.meetingUrl = result['meeting_control_index_url']
+            self.meetingName = result['meeting_name']
+            self.meetingBeginTime = result['meeting_start_time']
+            self.meetingEndTime = result['meeting_end_time']
+            self.meetingRoomId = int(result['roomId'])
+            self.meetingRoomJoinPin = result['roomJoinPin']
+            return True
+        except Exception as err:
+            Log.exception('update_from_request err:[' + str(err) + ']')
+        return False

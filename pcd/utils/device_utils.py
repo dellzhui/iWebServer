@@ -9,8 +9,8 @@ Log = loggerr(__name__).getLogger()
 
 
 class DeviceHTTPRequestUtil(HTTPRequestUtil):
-    def __init__(self):
-        super().__init__(base_url=iWebServerConfig.IWEBSERVER_DEVICE_BASE_URL)
+    def __init__(self, base_url=iWebServerConfig.IWEBSERVER_DEVICE_BASE_URL):
+        super().__init__(base_url=base_url)
         self.device_type_info = {'hub': 'HUB', 'container': 'Container', 'stb': 'STB'}
 
     def __is_successful_response(self, result):
@@ -70,3 +70,16 @@ class DeviceHTTPRequestUtil(HTTPRequestUtil):
         except Exception as err:
             Log.exception('destroy container err:[' + str(err) + ']')
         return False
+
+    # https://www.wolai.com/yang_ids/bg4kyCjfdMqSza4qc7tTvF#ksbxPC85Qw5j93fyBLtHMp
+    def get_meeting_infos(self, email, meeting_id=None):
+        try:
+            result = self.do_post(url='/api/get_current_user_meeting_infos/', data={'UserMail': email})
+            if (result == None or not self.__is_successful_response(result)):
+                Log.error('get meeting infos failed')
+                return None
+            Log.info('got result is {}'.format(json.dumps(result)))
+            return [item for item in result['msg'] if (meeting_id == None or item['meeting_id'] == meeting_id)]
+        except Exception as err:
+            Log.exception('get meeting infos err:[' + str(err) + ']')
+        return None

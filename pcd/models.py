@@ -92,6 +92,11 @@ class DeviceInfo(ModelCommonInfo):
     rtcbotConnectUrl = models.CharField(null=True, blank=True, max_length=1024, verbose_name=_('RTCBot Url'))
     noVNCConnectUrl = models.CharField(null=True, blank=True, max_length=1024, verbose_name=_('noVNC Url'))
 
+    # meeting
+    meetingId = models.CharField(null=True, blank=True, max_length=256, verbose_name=_('Meeting Id'))
+    meetingUrl = models.CharField(null=True, blank=True, max_length=1024, verbose_name=_('Meeting Url'))
+    meetingRunning = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Is Meeting Running'))
+
     room = models.ForeignKey(RoomInfo, null=True, blank=True, related_name="devices", on_delete=models.CASCADE)
     workstation = models.ForeignKey(WorkstationInfo, null=True, blank=True, related_name="devices", on_delete=models.CASCADE)
     owner = models.ForeignKey(User, null=True, blank=True, related_name="devices", on_delete=models.CASCADE)
