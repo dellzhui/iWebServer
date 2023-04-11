@@ -1,0 +1,1 @@
+for(var o=void 0,e=function(){},r=["assert","clear","count","debug","dir","dirxml","error","exception","group","groupCollapsed","groupEnd","info","log","markTimeline","profile","profileEnd","table","time","timeEnd","timeStamp","trace","warn"],n=r.length;n--;)o=r[n],console[o]||(console[o]=e);const i=console;export{i as c};

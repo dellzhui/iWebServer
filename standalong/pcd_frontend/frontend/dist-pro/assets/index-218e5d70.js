@@ -1,0 +1,1 @@
+import{r as o}from"./index-4154bb8a.js";const a=a=>o.get({url:"/web/api/v1.0/workstation/room",params:a}),r=(a,r)=>o.post({url:`/web/api/v1.0/workstation/room?workstationId=${r}`,data:a});export{a,r};
