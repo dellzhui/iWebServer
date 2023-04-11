@@ -12,3 +12,4 @@ pycryptodome==3.17
 paho-mqtt==1.6.1
 django-guardian==2.4.0
 django-cors-headers==3.14.0
+ Cython==0.29.34
