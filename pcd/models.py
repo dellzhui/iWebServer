@@ -95,7 +95,7 @@ class DeviceInfo(ModelCommonInfo):
     # meeting
     meetingId = models.CharField(null=True, blank=True, max_length=256, verbose_name=_('Meeting Id'))
     meetingUrl = models.CharField(null=True, blank=True, max_length=1024, verbose_name=_('Meeting Url'))
-    meetingRunning = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Is Meeting Running'))
+    meetingJoined = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Is Joined Meeting'))
 
     room = models.ForeignKey(RoomInfo, null=True, blank=True, related_name="devices", on_delete=models.CASCADE)
     workstation = models.ForeignKey(WorkstationInfo, null=True, blank=True, related_name="devices", on_delete=models.CASCADE)

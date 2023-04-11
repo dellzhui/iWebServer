@@ -1,5 +1,4 @@
 import json
-import logging
 from interface.utils.log_utils import loggerr
 from interface.datatype.datatype import JsonDatatypeBase, IoTBase
 from pcd.models import DeviceInfo
@@ -116,7 +115,7 @@ class WebsocketDeviceStatusDataType(JsonDatatypeBase):
         self.noVNCConnectUrl: str | None = None
         self.meetingId: str | None = None
         self.meetingUrl: str | None = None
-        self.meetingRunning: bool = False
+        self.meetingJoined: bool = False
 
         self.update_from_device(device)
 
@@ -173,7 +172,7 @@ class WebsocketDeviceStatusDataType(JsonDatatypeBase):
         self.noVNCConnectUrl = device.noVNCConnectUrl
         self.meetingId = device.meetingId
         self.meetingUrl = device.meetingUrl
-        self.meetingRunning = device.meetingRunning
+        self.meetingJoined = device.meetingJoined
 
 
 # https://www.wolai.com/yang_ids/bg4kyCjfdMqSza4qc7tTvF#aNAcSKDn8zTAszr4VyJQ2b
@@ -182,12 +181,13 @@ class WebsocketMeetingInfoDataType(JsonDatatypeBase):
         self.deviceId: int = device.id
         self.meetingId: str | None = None
         self.meetingUrl: str | None = None
-        self.meetingRunning: bool = True if(device.meetingRunning) else False
+        self.meetingJoined: bool = True if(device.meetingJoined) else False
         self.meetingName: str | None = None
         self.meetingBeginTime: str | None = None
         self.meetingEndTime: str | None = None
         self.meetingRoomId: int | None = None
         self.meetingRoomJoinPin: str | None = None
+        self.meetingStatus: str | None = None
 
     # https://www.wolai.com/yang_ids/bg4kyCjfdMqSza4qc7tTvF#ksbxPC85Qw5j93fyBLtHMp
     def update_from_request_result(self, result: dict):
@@ -199,6 +199,12 @@ class WebsocketMeetingInfoDataType(JsonDatatypeBase):
             self.meetingEndTime = result['meeting_end_time']
             self.meetingRoomId = int(result['roomId'])
             self.meetingRoomJoinPin = result['roomJoinPin']
+            if(result['current_meeting_status'] == 'over'):
+                self.meetingStatus = 'Ended'
+            elif(result['current_meeting_status'] == 'not started'):
+                self.meetingStatus = 'NotStarted'
+            elif(result['current_meeting_status'] == 'running'):
+                self.meetingStatus = 'Running'
             return True
         except Exception as err:
             Log.exception('update_from_request err:[' + str(err) + ']')

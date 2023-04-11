@@ -164,7 +164,7 @@ class PCDConsumer(iWebServerConsumer):
                 return IoTErrorResponse.GenJson(requestId=requestId, error_msg='already joined')
 
             if(self.__webrtc_util.container_join_to_room(container=device, roomId=websocket_meeting_info.meetingRoomId, roomJoinPin=websocket_meeting_info.meetingRoomJoinPin)):
-                device.meetingRunning = True
+                device.meetingJoined = True
                 device.meetingId = meeting_id
                 device.meetingUrl = websocket_meeting_info.meetingUrl
                 device.save()
@@ -205,7 +205,7 @@ class PCDConsumer(iWebServerConsumer):
                 return IoTErrorResponse.GenJson(requestId=requestId, error_msg='not joined')
 
             if(self.__webrtc_util.container_join_to_room(container=device, roomId=device.room.roomId, roomJoinPin=device.room.roomJoinPin)):
-                device.meetingRunning = False
+                device.meetingJoined = False
                 device.save()
                 return IoTSuccessResponse().GenJson(data='exit succeed', requestId=requestId)
             return IoTErrorResponse.GenJson(requestId=requestId, error_msg='exit failed')
