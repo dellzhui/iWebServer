@@ -3,6 +3,11 @@
 cd "`dirname $0`"
 CURDIR="`pwd`"
 
+init_env()
+{
+    export PYTHONPATH=/home/yang/data/libs:${PYTHONPATH}
+}
+
 run_server()
 {
     cd "${CURDIR}"
@@ -12,4 +17,5 @@ run_server()
     done
 }
 
+init_env
 run_server
