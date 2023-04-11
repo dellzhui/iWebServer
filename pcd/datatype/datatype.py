@@ -1,6 +1,6 @@
 import json
 from interface.utils.log_utils import loggerr
-from interface.datatype.datatype import JsonDatatypeBase, IoTBase
+from interface.datatype.datatype import JsonDatatypeBase
 from pcd.models import DeviceInfo
 
 Log = loggerr(__name__).getLogger()

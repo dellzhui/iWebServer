@@ -146,7 +146,6 @@ class PCDConsumer(iWebServerConsumer):
             if(device_meeting_infos == None or device_meeting_infos == []):
                 return IoTErrorResponse.GenJson(requestId=requestId, error_msg='got meeting infos failed')
 
-            # TODO: all meeting IDs are currently the same
             meeting_info = device_meeting_infos[0]
 
             device_webrtc_connection_info_container = self.__webrtc_util.get_device_webrtc_connection_info(device)
@@ -187,7 +186,6 @@ class PCDConsumer(iWebServerConsumer):
             if(device_meeting_infos == None or device_meeting_infos == []):
                 return IoTErrorResponse.GenJson(requestId=requestId, error_msg='got meeting infos failed')
 
-            # TODO: all meeting IDs are currently the same
             meeting_info = device_meeting_infos[0]
 
             device_webrtc_connection_info_container = self.__webrtc_util.get_device_webrtc_connection_info(device)
