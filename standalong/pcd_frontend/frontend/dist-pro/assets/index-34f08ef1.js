@@ -1,1 +1,0 @@
-import{r as a}from"./index-4154bb8a.js";const r=r=>a.get({url:"/web/api/v1.0/user/user",params:r}),s=r=>a.post({url:"/web/api/v1.0/user/user",data:r}),e=r=>a.get({url:"/web/api/v1.0/user/user",params:r}),u=(r,s)=>a.put({url:"/web/api/v1.0/user/user",data:r,params:s}),p=r=>a.delete({url:"/web/api/v1.0/user/user",params:r});export{p as a,s as b,u as c,e as d,r as u};

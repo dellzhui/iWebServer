@@ -1,1 +1,0 @@
-import{r as a}from"./index-4154bb8a.js";const o=o=>a.get({url:"/web/api/v1.0/workstation/room/device",params:o}),r=(o,r)=>a.post({url:"/web/api/v1.0/workstation/room/device",data:o,params:r}),e=o=>a.delete({url:"/web/api/v1.0/workstation/room/device",params:o});export{o as a,e as b,r as d};

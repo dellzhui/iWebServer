@@ -1,1 +1,0 @@
-import{bL as a,H as l,cl as s,a as e,bd as r,r as n,bD as o}from"./index-61faf58b.js";const t=a=>(l,s)=>c(l,s,e(a)),c=(a,l,s)=>o(s,a,a).replace(/\{(\w+)\}/g,((a,s)=>{var e;return`${null!=(e=null==l?void 0:l[s])?e:`{${s}}`}`})),u=()=>{const o=a("locale");return(a=>({lang:l((()=>e(a).name)),locale:r(a)?a:n(a),t:t(a)}))(l((()=>o.value||s)))};export{u};
