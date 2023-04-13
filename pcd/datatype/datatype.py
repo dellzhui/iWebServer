@@ -101,9 +101,9 @@ class DeviceWebRtcConnectionDataType(JsonDatatypeBase):
 
 # https://www.wolai.com/yang_ids/e5UPobHGfhX85QEiW4fkQa#5RQCMakV2sMuhQBpbRRkx4
 class WebsocketDeviceStatusDataType(JsonDatatypeBase):
-    def __init__(self, device: DeviceInfo, deviceStatus=None):
+    def __init__(self, device: DeviceInfo, ready_payload: str=None, device_webrtc_connection_info: DeviceWebRtcConnectionDataType=None):
         self.deviceId: int | None = None
-        self.deviceStatus: str | None = deviceStatus
+        self.deviceStatus: str = 'OFFLINE'
         self.publisherId: int | None = None
         self.privateId: int | None = None
         self.roomId: int | None = None
@@ -117,7 +117,15 @@ class WebsocketDeviceStatusDataType(JsonDatatypeBase):
         self.meetingUrl: str | None = None
         self.meetingJoined: bool = False
 
-        self.update_from_device(device)
+        self.__update_from_device(device)
+        if(self.__update_from_ready_event(device, ready_payload)):
+            self.deviceStatus = 'ONLINE'
+
+        if (self.__update_from_device_webrtc_connection_info(device, device_webrtc_connection_info)):
+            self.deviceStatus = 'ONLINE'
+
+        if(self.deviceStatus == 'OFFLINE'):
+            self.meetingJoined = False
 
     def __str__(self):
         return self.to_json()
@@ -144,26 +152,44 @@ class WebsocketDeviceStatusDataType(JsonDatatypeBase):
             }
         }
     '''
-    def update_from_ready_event(self, payload: str):
+    def __update_from_ready_event(self, device: DeviceInfo, payload: str):
         try:
+            if(payload == None):
+                return False
             info = json.loads(payload)['RmsResult']['extras']['webrtc']
             self.publisherId = info['publisherId']
             self.roomId = info['roomId']
             self.roomJoinPin = info['roomJoinPin']
             self.privateId = info['privateId']
+
+            if(self.roomId != device.room.roomId):
+                self.meetingJoined = True
+            else:
+                self.meetingJoined = False
+            return True
         except Exception as err:
             Log.exception('update_from_request err:[' + str(err) + ']')
+        return False
 
-    def update_from_device_webrtc_connection_info(self, device_webrtc_connection_info: DeviceWebRtcConnectionDataType):
+    def __update_from_device_webrtc_connection_info(self, device: DeviceInfo, device_webrtc_connection_info: DeviceWebRtcConnectionDataType):
         try:
+            if(device_webrtc_connection_info == None):
+                return False
             self.publisherId = device_webrtc_connection_info.publisherId
             self.roomId = device_webrtc_connection_info.roomId
             self.roomJoinPin = device_webrtc_connection_info.roomJoinPin
             self.privateId = device_webrtc_connection_info.privateId
-        except Exception as err:
-            Log.exception('update_from_device_webrtc_connection_info err:[' + str(err) + ']')
 
-    def update_from_device(self, device: DeviceInfo):
+            if (self.roomId != device.room.roomId):
+                self.meetingJoined = True
+            else:
+                self.meetingJoined = False
+            return True
+        except Exception as err:
+            Log.exception('__update_from_device_webrtc_connection_info err:[' + str(err) + ']')
+        return False
+
+    def __update_from_device(self, device: DeviceInfo):
         self.deviceId = device.id
         self.turnServer = device.turnServer
         self.turnUserName = device.turnUserName
@@ -172,7 +198,6 @@ class WebsocketDeviceStatusDataType(JsonDatatypeBase):
         self.noVNCConnectUrl = device.noVNCConnectUrl
         self.meetingId = device.meetingId
         self.meetingUrl = device.meetingUrl
-        self.meetingJoined = device.meetingJoined
 
 
 # https://www.wolai.com/yang_ids/bg4kyCjfdMqSza4qc7tTvF#aNAcSKDn8zTAszr4VyJQ2b
@@ -181,7 +206,6 @@ class WebsocketMeetingInfoDataType(JsonDatatypeBase):
         self.deviceId: int = device.id
         self.meetingId: str | None = None
         self.meetingUrl: str | None = None
-        self.meetingJoined: bool = True if(device.meetingJoined) else False
         self.meetingName: str | None = None
         self.meetingBeginTime: str | None = None
         self.meetingEndTime: str | None = None
@@ -192,6 +216,8 @@ class WebsocketMeetingInfoDataType(JsonDatatypeBase):
     # https://www.wolai.com/yang_ids/bg4kyCjfdMqSza4qc7tTvF#ksbxPC85Qw5j93fyBLtHMp
     def update_from_request_result(self, result: dict):
         try:
+            if(result == None):
+                return False
             self.meetingId = result['meeting_id']
             self.meetingUrl = result['meeting_control_index_url']
             self.meetingName = result['meeting_name']

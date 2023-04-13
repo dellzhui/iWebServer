@@ -3,7 +3,7 @@ from interface.utils.log_utils import loggerr
 import re
 from interface.datatype.datatype import IoTErrorResponse, IoTSuccessResponse
 from pcd.config import iWebServerConfig
-from pcd.datatype.datatype import WebsocketDeviceStatusDataType, WebsocketMeetingInfoDataType
+from pcd.datatype.datatype import WebsocketDeviceStatusDataType, WebsocketMeetingInfoDataType, DeviceWebRtcConnectionDataType
 from pcd.models import DeviceInfo
 from pcd.utils.device_utils import DeviceHTTPRequestUtil
 from pcd.utils.webrtc_utils import WebRTCUtil
@@ -37,12 +37,11 @@ class PCDConsumer(iWebServerConsumer):
             if (not device.is_container()):
                 return IoTErrorResponse.GenJson(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_NOT_PRESENCED, error_msg='device is not container', requestId=requestId)
 
-            device_webrtc_connection_info_container = self.__webrtc_util.get_device_webrtc_connection_info(device)
+            device_webrtc_connection_info_container: DeviceWebRtcConnectionDataType = self.__webrtc_util.get_device_webrtc_connection_info(device)
             if(device_webrtc_connection_info_container != None):
-                data = WebsocketDeviceStatusDataType(device=device, deviceStatus='ONLINE')
-                data.update_from_device_webrtc_connection_info(device_webrtc_connection_info_container)
+                data = WebsocketDeviceStatusDataType(device=device, device_webrtc_connection_info=device_webrtc_connection_info_container)
                 return IoTSuccessResponse().GenJson(data=data.to_dict(), requestId=requestId)
-            return IoTSuccessResponse().GenJson(data=WebsocketDeviceStatusDataType(device=device, deviceStatus='OFFLINE').to_dict(), requestId=requestId)
+            return IoTSuccessResponse().GenJson(data=WebsocketDeviceStatusDataType(device=device).to_dict(), requestId=requestId)
         except Exception as err:
             Log.exception('__container_status err:[' + str(err) + ']')
         return IoTErrorResponse.GenJson(requestId=requestId)
@@ -163,7 +162,6 @@ class PCDConsumer(iWebServerConsumer):
                 return IoTErrorResponse.GenJson(requestId=requestId, error_msg='already joined')
 
             if(self.__webrtc_util.container_join_to_room(container=device, roomId=websocket_meeting_info.meetingRoomId, roomJoinPin=websocket_meeting_info.meetingRoomJoinPin)):
-                device.meetingJoined = True
                 device.meetingId = meeting_id
                 device.meetingUrl = websocket_meeting_info.meetingUrl
                 device.save()
@@ -203,8 +201,6 @@ class PCDConsumer(iWebServerConsumer):
                 return IoTErrorResponse.GenJson(requestId=requestId, error_msg='not joined')
 
             if(self.__webrtc_util.container_join_to_room(container=device, roomId=device.room.roomId, roomJoinPin=device.room.roomJoinPin)):
-                device.meetingJoined = False
-                device.save()
                 return IoTSuccessResponse().GenJson(data='exit succeed', requestId=requestId)
             return IoTErrorResponse.GenJson(requestId=requestId, error_msg='exit failed')
         except Exception as err:
@@ -230,8 +226,7 @@ class PCDConsumer(iWebServerConsumer):
             if (len(items) == 1):
                 device = DeviceInfo.objects.filter(productKey=items[0][0], deviceName=items[0][1], owner_id=self._user.id).last()
                 if(device != None):
-                    data = WebsocketDeviceStatusDataType(device=device, deviceStatus='ONLINE')
-                    data.update_from_ready_event(msg)
+                    data = WebsocketDeviceStatusDataType(device=device, ready_payload=msg)
                     return self.send(text_data=data.to_json())
         except Exception as err:
             Log.exception('_on_mqtt_msg_cb err:[' + str(err) + ']')
