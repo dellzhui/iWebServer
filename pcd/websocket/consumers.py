@@ -179,17 +179,20 @@ class PCDConsumer(iWebServerConsumer):
             if (not device.is_container()):
                 return IoTErrorResponse.GenJson(error_code=iWebServerConfig.IWEBSERVER_ERROR_CODE_DEVICE_NOT_PRESENCED, error_msg='device is not container', requestId=requestId)
 
+            device_webrtc_connection_info_container = self.__webrtc_util.get_device_webrtc_connection_info(device)
+            if (device_webrtc_connection_info_container == None):
+                Log.error('container not online')
+                return IoTErrorResponse.GenJson(requestId=requestId, error_msg='container not online')
+            if (device_webrtc_connection_info_container.roomId == device.room.roomId):
+                Log.error('container not joined meeting')
+                return IoTErrorResponse.GenJson(requestId=requestId, error_msg='container not joined meeting')
+
             meeting_id = paras['meetingId']
             device_meeting_infos = self.__meeting_control_util.get_meeting_infos(email=self._user.email, meeting_id=meeting_id)
             if(device_meeting_infos == None or device_meeting_infos == []):
                 return IoTErrorResponse.GenJson(requestId=requestId, error_msg='got meeting infos failed')
 
             meeting_info = device_meeting_infos[0]
-
-            device_webrtc_connection_info_container = self.__webrtc_util.get_device_webrtc_connection_info(device)
-            if (device_webrtc_connection_info_container == None):
-                Log.error('container not online')
-                return IoTErrorResponse.GenJson(requestId=requestId, error_msg='container not online')
 
             websocket_meeting_info = WebsocketMeetingInfoDataType(device=device)
             if(not websocket_meeting_info.update_from_request_result(meeting_info)):
