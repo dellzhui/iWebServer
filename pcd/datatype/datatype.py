@@ -1,6 +1,7 @@
 import json
 from interface.utils.log_utils import loggerr
 from interface.datatype.datatype import JsonDatatypeBase
+from pcd.config import iWebServerConfig
 from pcd.models import DeviceInfo
 
 Log = loggerr(__name__).getLogger()
@@ -116,6 +117,7 @@ class WebsocketDeviceStatusDataType(JsonDatatypeBase):
         self.meetingId: str | None = None
         self.meetingUrl: str | None = None
         self.meetingJoined: bool = False
+        self.janusHttpsUrl: str = iWebServerConfig.IWEBSERVER_JANUS_BASE_URL
 
         self.__update_from_device(device)
         if(self.__update_from_ready_event(device, ready_payload)):
