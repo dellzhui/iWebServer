@@ -81,8 +81,9 @@ class IoTErrorResponse(JsonDatatypeBase):
 
 
 class AuthResponseInfo(IoTSuccessResponse):
-    def __init__(self, access=None, refresh=None, isAdmin=False):
+    def __init__(self, access=None, refresh=None, isAdmin=False, userName=None):
         self.access = access
         self.refresh = refresh
         self.isAdmin = isAdmin
+        self.userName = userName
         IoTSuccessResponse.__init__(self)

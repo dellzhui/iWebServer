@@ -208,8 +208,9 @@ class UserUtils:
     def get_user(self):
         return self.user
 
-    def is_admin(self):
-        return self.user.has_perm('interface.{}'.format(iWebServerBaseConfig.IWEBSERVER_PERMISSION_ADMIN_ACCESS))
+    @staticmethod
+    def is_admin(user: User):
+        return user.has_perm('interface.{}'.format(iWebServerBaseConfig.IWEBSERVER_PERMISSION_ADMIN_ACCESS))
 
     def auto_login(self, request):
         try:
