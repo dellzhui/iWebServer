@@ -36,3 +36,6 @@ class iWebServerConfig(iWebServerBaseConfig):
 
     # webrtc
     IWEBSERVER_WEBRTC_AUTO_CREATE_CONTAINER_ON_HUB_READY = False if (os.environ.get('IWEBSERVER_WEBRTC_AUTO_CREATE_CONTAINER_ON_HUB_READY', 'True') == 'False') else True
+
+    # auth
+    IWEBSERVER_AUTH_BASE_URL = os.environ.get('IWEBSERVER_AUTH_BASE_URL')

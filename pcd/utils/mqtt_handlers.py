@@ -74,8 +74,8 @@ class MQTThandlers:
             '''
             topic = payload['topic']
 
-            items = re.findall(re.compile('^/sys/rms/crc/(.*?)/(.*?)/response/publisherReady$', re.S), topic)
             # TODO：parse other
+            items = re.findall(re.compile('^/sys/rms/crc/(.*?)/(.*?)/response/publisherReady$', re.S), topic)
             if (len(items) != 1):
                 Log.error('parse topic failed')
                 return False
