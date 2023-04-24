@@ -1,13 +1,12 @@
 import json
-
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from interface.config import iWebServerBaseConfig
 from interface.utils.UserControlUtils import UserUtils
 from interface.utils.log_utils import loggerr
-from django.views.decorators.http import require_POST
-from interface.datatype.datatype import IoTErrorResponse, AuthResponseInfo
+from django.views.decorators.http import require_POST, require_GET
+from interface.datatype.datatype import IoTErrorResponse, AuthResponseInfo, IoTSuccessResponse
 from interface.views import iwebserver_logger_f
+from pcd.config import iWebServerConfig
 from pcd.utils.auth_utils import AuthRequestUtil
 
 Log = loggerr(__name__).getLogger()
@@ -32,4 +31,13 @@ def refresh_token(request):
         return AuthResponseInfo(access=str(refresh.access_token), refresh=str(refresh), isAdmin=UserUtils.is_admin(user), userName=user.username).GenResponse()
     except Exception as err:
         Log.exception('refresh_token post err:[' + str(err) + ']')
+    return IoTErrorResponse.GenResponse()
+
+@require_GET
+@iwebserver_logger_f
+def get_ice_info(request):
+    try:
+        return IoTSuccessResponse().GenResponse(data={'turnServer': iWebServerConfig.IWEBSERVER_ICE_TURN_SERVER, 'turnUserName': iWebServerConfig.IWEBSERVER_ICE_TURN_USERNAME, 'turnCredential': iWebServerConfig.IWEBSERVER_ICE_TURN_CREDENTIAL})
+    except Exception as err:
+        Log.exception('get ice info err:[' + str(err) + ']')
     return IoTErrorResponse.GenResponse()

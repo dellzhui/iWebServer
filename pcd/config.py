@@ -39,3 +39,8 @@ class iWebServerConfig(iWebServerBaseConfig):
 
     # auth
     IWEBSERVER_AUTH_BASE_URL = os.environ.get('IWEBSERVER_AUTH_BASE_URL')
+
+    # ice
+    IWEBSERVER_ICE_TURN_SERVER = os.environ.get('IWEBSERVER_ICE_TURN_SERVER')
+    IWEBSERVER_ICE_TURN_USERNAME = os.environ.get('IWEBSERVER_ICE_TURN_USERNAME')
+    IWEBSERVER_ICE_TURN_CREDENTIAL = os.environ.get('IWEBSERVER_ICE_TURN_CREDENTIAL')
