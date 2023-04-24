@@ -11,7 +11,7 @@ class HTTPRequestUtil:
 
     def do_get(self, url, timeout=30):
         try:
-            result = requests.get('{}{}'.format(self._BASE_URL, url), timeout=timeout).json()
+            result = requests.get('{}{}'.format(self._BASE_URL, url), timeout=timeout, verify=False).json()
             Log.debug('HTTPRequestUtil do_get result is {}'.format(result))
             return result
         except Exception as err:
@@ -20,7 +20,7 @@ class HTTPRequestUtil:
 
     def do_post(self, url, data=None, timeout=30):
         try:
-            result_ori = requests.post('{}{}'.format(self._BASE_URL, url), json=data, timeout=timeout)
+            result_ori = requests.post('{}{}'.format(self._BASE_URL, url), json=data, timeout=timeout, verify=False)
             try:
                 result = result_ori.json()
             except Exception:
@@ -33,7 +33,7 @@ class HTTPRequestUtil:
 
     def do_delete(self, url, timeout=30):
         try:
-            result = requests.delete('{}{}'.format(self._BASE_URL, url), timeout=timeout).json()
+            result = requests.delete('{}{}'.format(self._BASE_URL, url), timeout=timeout, verify=False).json()
             Log.info('HTTPRequestUtil do_delete result is {}'.format(result))
             return result
         except Exception as err:
@@ -42,7 +42,7 @@ class HTTPRequestUtil:
 
     def do_put(self, url, data=None, timeout=30):
         try:
-            result = requests.put('{}{}'.format(self._BASE_URL, url), json=data, timeout=timeout).json()
+            result = requests.put('{}{}'.format(self._BASE_URL, url), json=data, timeout=timeout, verify=False).json()
             Log.info('HTTPRequestUtil do_put result is {}'.format(result))
             return result
         except Exception as err:
