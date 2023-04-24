@@ -24,7 +24,7 @@ def refresh_token(request):
 
         # https://www.wolai.com/yang_ids/e5UPobHGfhX85QEiW4fkQa#haYXk8pb7sMGR5Hjmk3NAX
         jsessionId = request_data['jsessionId']
-        host = request.META['HTTP_HOST'].split(':')[0]
+        host = request_data['host']
         user = AuthRequestUtil().get_user(jsessionId=jsessionId, host=host)
         if(user == None):
             return IoTErrorResponse.GenResponse(error_code=iWebServerBaseConfig.IWEBSERVER_ERROR_CODE_USER_NOT_PRESENCED, error_msg='user not presenced')
