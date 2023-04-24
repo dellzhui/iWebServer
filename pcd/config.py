@@ -39,4 +39,3 @@ class iWebServerConfig(iWebServerBaseConfig):
 
     # auth
     IWEBSERVER_AUTH_BASE_URL = os.environ.get('IWEBSERVER_AUTH_BASE_URL')
-    IWEBSERVER_AUTH_LOCAL_HOST = os.environ.get('IWEBSERVER_AUTH_LOCAL_HOST')

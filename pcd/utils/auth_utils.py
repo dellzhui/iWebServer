@@ -19,10 +19,10 @@ class AuthRequestUtil(HTTPRequestUtil):
         except Exception:
             return False
 
-    def get_user(self, jsessionId: str):
+    def get_user(self, jsessionId: str, host: str):
         try:
             # https://www.wolai.com/yang_ids/e5UPobHGfhX85QEiW4fkQa#haYXk8pb7sMGR5Hjmk3NAX
-            result = self.do_post(url='/sys/login/status/{}/{}'.format(jsessionId, iWebServerConfig.IWEBSERVER_AUTH_LOCAL_HOST))
+            result = self.do_post(url='/sys/login/status/{}/{}'.format(jsessionId, host))
 
             '''
             {
